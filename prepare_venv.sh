@@ -29,7 +29,7 @@ third_party="${ROOTDIR}/third_party"
 # Activate virtual python
 . "$ROOTDIR/env_scripts/python_virtualenv_activate.sh"
 
-. "$ROOTDIR/env_scripts/install_benchmark_lib.sh"
+. "$ROOTDIR/env_scripts/pip_url.sh"
 
 $PYTHON -c "import IPython"
 
@@ -39,3 +39,5 @@ fi
 alias ipython=$python_venv_path/bin/ipython
 
 export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH
+
+. "$ROOTDIR/env_scripts/install_benchmark_lib.sh"

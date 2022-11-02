@@ -14,4 +14,6 @@
 # ============================================================================
 """Prepare tasks."""
 
-from . import random_circuit
+from .random_circuit import generate_random_pqc, generate_random_circuit
+from .random_ham import random_ham
+from .sk_model import generate_sk_model

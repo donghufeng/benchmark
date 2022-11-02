@@ -17,14 +17,16 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
+PACKAGENAME="Intel-QS"
+PACKAGEPATH="${third_party}/${PACKAGENAME}"
+
+export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
+
 $PYTHON -c "import intelqs_py"
 
 if [ $? -ne 0 ]; then
 
     URL="https://gitee.com/mirrors_intel/Intel-QS.git"
-    PACKAGENAME="Intel-QS"
-    PACKAGEPATH="${third_party}/${PACKAGENAME}"
-
     if [ ! -d $third_party ]; then
         mkdir $third_party
     fi
@@ -54,9 +56,6 @@ if [ $? -ne 0 ]; then
     cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF -Dpybind11_DIR=$PYBIND_DIR ..
     make -j10
     cp lib/*.so ${python_venv_path}/bin
-
-    export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
-
     cd $ROOTDIR
 
 else

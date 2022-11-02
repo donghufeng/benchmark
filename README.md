@@ -15,10 +15,10 @@
 
 ## Benchmark task
 
-|任务名称|描述|比特范围|哈密顿量项数|量子门个数|OMP|
-|-|-|-|-|-|-|
-|random_circuit_qs|随机量子线路振幅模拟|4-24|/|1000-100|1-8|
-|random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Z0|1000-10|1-8|
-|apply_random_hamiltonian|作用随机哈密顿量|4-24|1000-100|/|1-8|
-|maxcut_SK_model_with_qaoa|利用qaoa解决全连接图的maxcut问题|4-24|/|/|1-8|
-|vqe|分子基态能力求解|H2(4), LiH(12), BeH2(14), CH4(18)|/|/|1-8|
+|任务名称|描述|比特范围|哈密顿量项数|量子门个数|OMP|Layer|
+|-|-|-|-|-|-|-|
+|random_circuit_qs|随机量子线路振幅模拟|4-24|/|1000-100|1-8|/|
+|random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Z0|1000-10|1-8|/|
+|apply_random_hamiltonian|作用随机哈密顿量|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
+|maxcut_SK_model_with_qaoa|利用qaoa解决全连接图的maxcut问题|4-24|/|/|1-8|20-1|
+|vqe|分子基态能力求解|H2(4), LiH(12), BeH2(14), CH4(18)|/|/|1-8|/|

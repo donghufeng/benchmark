@@ -27,6 +27,8 @@
     "maxcut_sk_model_with_qaoa": {
         "qubit_max": 24,
         "qubit_min": 4,
+        "layer_max":20,
+        "layer_min":1,
         "omp_max": 8,
         "omp_min": 1
     },
