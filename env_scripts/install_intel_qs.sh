@@ -40,10 +40,18 @@ if [ $? -ne 0 ]; then
 
     if [ ! -d "build" ]; then
         mkdir build
+    else
+        rm -r build
+        mkdir build
     fi
 
+    $PYTHON -c "import pybind11"
+    if [ $? -ne 0 ]; then
+        $PYTHON -m pip install pybind11==2.10.0
+    fi
+    PYBIND_DIR=$($PYTHON -m pybind11 --cmakedir)
     cd build
-    cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF ..
+    cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF -Dpybind11_DIR=$PYBIND_DIR ..
     make -j10
     cp lib/*.so ${python_venv_path}/bin
 

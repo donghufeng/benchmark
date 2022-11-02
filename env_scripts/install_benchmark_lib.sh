@@ -19,6 +19,8 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 
 # ------------------------------------------------------------------------------
 
+$PYTHON -m pip install --upgrade pip -i ${TUNA_PIP}
+
 . "$BASEPATH/pip_url.sh"
 . "$BASEPATH/install_mindquantum.sh"
 . "$BASEPATH/install_intel_qs.sh"

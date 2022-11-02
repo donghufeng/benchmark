@@ -31,4 +31,11 @@ third_party="${ROOTDIR}/third_party"
 
 . "$ROOTDIR/env_scripts/install_benchmark_lib.sh"
 
+$PYTHON -c "import IPython"
+
+if [ $? -ne 0 ]; then
+    $PYTHON -m pip install ipython
+fi
+alias ipython=$python_venv_path/bin/ipython
+
 export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH
