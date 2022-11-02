@@ -30,3 +30,5 @@ third_party="${ROOTDIR}/third_party"
 . "$ROOTDIR/env_scripts/python_virtualenv_activate.sh"
 
 . "$ROOTDIR/env_scripts/install_benchmark_lib.sh"
+
+export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH

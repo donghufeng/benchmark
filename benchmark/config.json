@@ -1,0 +1,107 @@
+{
+    "global_seed": 42,
+    "random_circuit_qs": {
+        "qubit_max": 24,
+        "qubit_min": 4,
+        "gate_num_max": 1000,
+        "gate_num_min": 100,
+        "omp_max": 8,
+        "omp_min": 1
+    },
+    "random_circuit_gradient": {
+        "qubit_max": 24,
+        "qubit_min": 4,
+        "gate_num_max": 1000,
+        "gate_num_min": 50,
+        "omp_max": 8,
+        "omp_min": 1
+    },
+    "apply_random_hamiltonian": {
+        "qubit_max": 24,
+        "qubit_min": 4,
+        "ham_term_max": 1000,
+        "ham_term_min": 100,
+        "omp_max": 8,
+        "omp_min": 1
+    },
+    "maxcut_sk_model_with_qaoa": {
+        "qubit_max": 24,
+        "qubit_min": 4,
+        "omp_max": 8,
+        "omp_min": 1
+    },
+    "vqe": {
+        "qubit_max": 24,
+        "qubit_min": 4,
+        "omp_max": 8,
+        "omp_min": 1,
+        "H2": {
+            "H_1": [
+                0,
+                0,
+                0
+            ],
+            "H_2": [
+                0,
+                0,
+                0.74
+            ]
+        },
+        "LiH": {
+            "Li": [
+                0,
+                0,
+                0
+            ],
+            "H": [
+                0,
+                0,
+                0.8
+            ]
+        },
+        "BeH2": {
+            "Be": [
+                0,
+                0,
+                0
+            ],
+            "H_1": [
+                0,
+                0,
+                0.5
+            ],
+            "H_2": [
+                0,
+                0,
+                -0.5
+            ]
+        },
+        "CH4": {
+            "C": [
+                0,
+                0,
+                0
+            ],
+            "H_1": [
+                0,
+                0,
+                1
+            ],
+            "H_2": [
+                1,
+                0,
+                0
+            ],
+            "H_3": [
+                0,
+                1,
+                0
+            ],
+            "H_4": [
+                -0.5,
+                -0.5,
+                -0.5
+            ]
+        }
+    }
+}
