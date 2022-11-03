@@ -57,3 +57,10 @@ $$Y_1$$
 ### maxcut_random_2_regular_with_qaoa
 
 随机的2-regular图，seed=42。
+
+## Conclution
+
+### Qulacs
+
+Parameter shift (relative slow) and adjoint gradient (relative fast).
+Only support rx, ry, rz, rot_pauli, only **CPU**.

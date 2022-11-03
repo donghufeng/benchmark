@@ -80,9 +80,15 @@ def mq_random_circuit(n_qubit):
 
 if __name__ == "__main__":
     from mindquantum import Simulator, Hamiltonian, QubitOperator
-    pqc = mq_random_circuit_pqc(5)
+    pqc = mq_random_circuit_pqc(10)
     sim = Simulator('mqvector', pqc.n_qubits)
     ham = Hamiltonian(QubitOperator('Y1'))
     grad_ops = sim.get_expectation_with_grad(ham, pqc)
     x0 = np.random.uniform(-1, 1, len(pqc.params_name))
     grad_ops(x0)
+    circ = mq_random_circuit(10)
+    sim = Simulator('mqvector', 10)
+    sim.apply_circuit(circ)
+    # ham = Hamiltonian(QubitOperator('Z0'))
+    # sim = Simulator('mqvector',1)
+    # grad_ops=sim.get_expectation_with_grad(ham, Circuit().rx('a', 0))
