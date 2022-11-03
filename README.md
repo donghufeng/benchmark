@@ -15,10 +15,45 @@
 
 ## Benchmark task
 
+量子线路或者哈密顿量由框架自己生成，不由其他框架转化。
+
 |任务名称|描述|比特范围|哈密顿量项数|量子门个数|OMP|Layer|
 |-|-|-|-|-|-|-|
-|random_circuit_qs|随机量子线路振幅模拟|4-24|/|1000-100|1-8|/|
-|random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Z0|1000-10|1-8|/|
-|apply_random_hamiltonian|作用随机哈密顿量|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
-|maxcut_SK_model_with_qaoa|利用qaoa解决全连接图的maxcut问题|4-24|/|/|1-8|20-1|
-|vqe|分子基态能力求解|H2(4), LiH(12), BeH2(14), CH4(18)|/|/|1-8|/|
+|random_circuit_qs|随机量子线路振幅模拟|4-24|/|25*n|1-8|/|
+|random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Y1|25*n|1-8|/|
+|random_hamiltonian_expectation|随机哈密顿量期望值|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
+|maxcut_random_2_regular_with_qaoa|利用qaoa解决随机2-regular的maxcut问题|4-24|/|/|1-8|1|
+
+## Task Detail
+
+### random_circuit_gradient
+
+4比特线路模板
+
+![random_circuit](./docs/random_circuit_tmp.png)
+
+线路扩展
+
+![random_circuit](./docs/random_circuit_tmp_ext.png)
+
+测量哈密顿量
+
+$$Y_1$$
+
+### random_circuit_qs
+
+与上述任务相同，将所有参数门参数选为随机值即可。
+
+### random_hamiltonian_expectation
+
+初始态为均匀叠加态。
+
+4比特模板：
+
+![ham_temp](./docs/ham_temp.png)
+
+扩展方式与上述任务相同。
+
+### maxcut_random_2_regular_with_qaoa
+
+随机的2-regular图，seed=42。

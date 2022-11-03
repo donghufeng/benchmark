@@ -139,5 +139,9 @@
                 ]
             ]
         ]
+    },
+    "tc_config":{
+        "dtype":"complex128",
+        "backend":"tensorflow"
     }
 }
