@@ -19,16 +19,22 @@ from typing import Dict
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(__file__))
 CONFIG_JSON = os.path.join(PROJECT_PATH, "benchmark/config.json")
+TMP_PATH = os.path.join(PROJECT_PATH, "tmp")
+if not os.path.exists(TMP_PATH):
+    os.mkdir(TMP_PATH)
 
 
 def get_y(x: int, x0: int, y0: int, x1: int, y1: int) -> int:
-    return int(y0 - 1.0*(x - x0) * (y0 - y1) / (x1 - x0))
+    return int(y0 - 1.0 * (x - x0) * (y0 - y1) / (x1 - x0))
 
 
 def get_config(task_name: str) -> Dict:
     with open(CONFIG_JSON) as f:
-        config = json.load(f)[task_name]
-    return config
+        config = json.load(f)
+    if task_name not in config:
+        raise ValueError(f"Task {task_name} not in config file.")
+    return config[task_name]
+
 
 SEED = get_config('global_seed')
 

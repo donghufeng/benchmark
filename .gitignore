@@ -2,3 +2,4 @@ venv
 third_party
 tmp
 __pycache__
+tmp*
