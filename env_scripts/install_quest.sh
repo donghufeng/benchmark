@@ -34,11 +34,21 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
     fi
     cd $PACKAGEPATH
 
+    if [ -d build ]; then
+        rm -rf build
+    fi
     mkdir build
     cd build
-    cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=80
+    cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
     make -j10
     cp QuEST/libQuEST.so $python_venv_path/lib
+    # cd ..
+    # rm -rf build
+    # mkdir build
+    # cd build
+    # cmake ..
+    # make -j10
+    # cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST.so
     export LD_LIBRARY_PATH=${python_venv_path}/lib:${LD_LIBRARY_PATH}
 
     cd $ROOTDIR

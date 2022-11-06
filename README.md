@@ -10,7 +10,7 @@
 |paddle quantum|Baidu|2.2.1|✅|✅|✅|✅|
 |tensorflow quantum|Google|0.7.2|✅|✅|✅|✅|
 |qulacs|Qulacs|0.5.2|✅|✅|✅|✅|
-|quest|QuEST|3.5.0|✅|✅|✅|❌|
+|quest|Oxford|3.5.0|✅|✅|✅|❌|
 |tensorcircuit|Tencent|0.5.0|✅|✅|✅|✅|
 
 ## Benchmark task
