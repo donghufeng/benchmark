@@ -2,16 +2,16 @@
 
 ## Frameworks
 
-|框架名称|公司|版本号|CPU|GPU|变分|Python API|
-|-|-|-|-|-|-|-|
-|MindQuantum|华为|0.8.0|✅|✅|✅|✅|
-|qiskit|IBM|0.38.0|✅|✅|✅|✅|
-|intel_qs|Intel|2.0.0-beta|✅|❌|❌|❌|
-|paddle quantum|Baidu|2.2.1|✅|✅|✅|✅|
-|tensorflow quantum|Google|0.7.2|✅|✅|✅|✅|
-|qulacs|Qulacs|0.5.2|✅|✅|✅|✅|
-|quest|Oxford|3.5.0|✅|✅|✅|❌|
-|tensorcircuit|Tencent|0.5.0|✅|✅|✅|✅|
+|框架名称|公司|版本号|CPU|GPU|原生支持变分|Python API|jit|原生支持jw变换|
+|-|-|-|-|-|-|-|-|-|
+|MindQuantum|华为|0.8.0|✅|✅|✅|✅|✅|✅|
+|qiskit|IBM|0.38.0|✅|✅|❌|✅|❌|❌|
+|intel_qs|Intel|2.0.0-beta|✅|❌|❌|❌|❌|❌|
+|paddle quantum|Baidu|2.2.1|✅|✅|❌|✅|✅|❌|
+|tensorflow quantum|Google|0.7.2|✅|✅|✅|✅|✅|❌|
+|qulacs|Qulacs|0.5.2|✅|✅|✅|✅|❌|❌|
+|quest|Oxford|3.5.0|✅|✅|✅|❌|❌|❌|
+|tensorcircuit|Tencent|0.5.0|✅|✅|❌|✅|✅|❌|
 
 ## Benchmark task
 
@@ -23,6 +23,7 @@
 |random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Y1|25*n|1-8|/|
 |random_hamiltonian_expectation|随机哈密顿量期望值|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
 |maxcut_random_2_regular_with_qaoa|利用qaoa解决随机2-regular的maxcut问题|4-24|/|/|1-8|1|
+|jw_transform|费米子算符jordan wigner变换|4-24|/|/|1-8|/|
 
 ## Task Detail
 
@@ -57,6 +58,18 @@ $$Y_1$$
 ### maxcut_random_2_regular_with_qaoa
 
 随机的2-regular图，seed=42。
+
+
+### jw_transform
+
+随机费米子算符的jw变换，4比特模板:
+
+```text
+-----a-------adg------------a-------
+-----adg--------------a-----a-------
+-----a-------adg------------adg-----
+-----adg--------------a-----adg-----
+```
 
 ## Conclution
 
