@@ -72,7 +72,7 @@ def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
     tc.set_dtype("complex128")
     if backend != "tensorflow":
         raise RuntimeError("We only benchmark for tensorflow backend.")
-    x = tc.backend.cast(np.random.uniform(-1, 1, 2 * 11), "float64")
+    x = tc.backend.cast(np.random.uniform(-1, 1, (n_qubits - 3) * 11), "float64")
     c_fun = tc_random_circuit_pqc(n_qubits)
     wave_fun = tc.backend.jit(lambda x: c_fun(x).wavefunction())
 
@@ -83,22 +83,5 @@ def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
 
 
 if __name__ == "__main__":
-    import numpy as np
-    import tensorcircuit as tc
-
-    tc.set_backend("tensorflow")
-    tc.set_dtype("complex128")
-
-    x = tc.backend.cast(np.random.uniform(-1, 1, 2 * 11), "float64")
-    c_fun = tc_random_circuit_pqc(5)
-    wave_fun = tc.backend.jit(lambda x: c_fun(x).wavefunction())
-    wave_fun(x)
-
-    def energy(x):
-        circ = c_fun(x)
-        e0 = circ.expectation((tc.gates.y(), [1]))
-        return tc.backend.real(e0)
-
-    g = tc.backend.value_and_grad(energy)
-    g = tc.backend.jit(g)
-    g(x)
+    run = tc_random_circuit_prepare("tensorflow", "cpu", 4)
+    run()

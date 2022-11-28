@@ -14,10 +14,10 @@
 # ============================================================================
 "tensorflow random quantum ham"
 
-import cirq
-
 
 def tf_random_ham(n_qubit):
+    import cirq
+
     qubits = cirq.GridQubit.rect(1, n_qubit)
     qo = 0
     for i in range(n_qubit - 3):
@@ -52,6 +52,7 @@ def tf_random_ham_prepare(platform: str, n_qubits: int):
         raise RuntimeError(
             f"Platform {platform} for tf_random_ham_prepare unrecognized, should be cpu or gpu."
         )
+    import cirq
     import tensorflow_quantum as tfq
     from tensorflow_quantum.python import util
 

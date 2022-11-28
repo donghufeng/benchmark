@@ -13,12 +13,13 @@
 # limitations under the License.
 # ============================================================================
 "tensorflow random quantum circuit"
-import cirq
 import numpy as np
 import sympy
 
 
 def tf_random_circuit(n_qubit):
+    import cirq
+
     def c_fun(params):
         qubits = cirq.GridQubit.rect(1, n_qubit)
         circ = cirq.Circuit()

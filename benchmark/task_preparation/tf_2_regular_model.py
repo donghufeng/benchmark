@@ -13,17 +13,11 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark tensorflow quantum for 2 regular max cut."""
-import cirq
 import networkx as nx
 import numpy as np
 import sympy
 
 from benchmark import SEED
-
-# import tensorflow as tf
-# import tensorflow_quantum as tfq
-# from tensorflow_quantum.core.ops import tfq_adj_grad_op
-# from tensorflow_quantum.python import util
 
 
 def tf_qaoa_prepare(platform: str, n_qubit: int):
@@ -41,6 +35,7 @@ def tf_qaoa_prepare(platform: str, n_qubit: int):
         raise RuntimeError(
             f"Platform {platform} for tf_random_ham_prepare unrecognized, should be cpu or gpu."
         )
+    import cirq
     import tensorflow_quantum as tfq
     from tensorflow_quantum.python import util
 
