@@ -39,7 +39,7 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
     fi
     mkdir build
     cd build
-    cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
+    cmake ..
     make -j10
     cp QuEST/libQuEST.so $python_venv_path/lib
     # cd ..
@@ -52,6 +52,19 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
     export LD_LIBRARY_PATH=${python_venv_path}/lib:${LD_LIBRARY_PATH}
 
     cd $ROOTDIR
+    cd $third_party
+    cd $PACKAGEPATH
+    if [ -d build ]; then
+        rm -rf build
+    fi
+    mkdir build
+    cd build
+    cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
+    make -j10
+    cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST_GPU.so
+
+    cd $ROOTDIR
+
 else
     echo "${_BOLD}${_RED}quest already installed.${_NORMAL}"
 fi

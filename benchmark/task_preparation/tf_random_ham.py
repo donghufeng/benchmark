@@ -21,14 +21,54 @@ def tf_random_ham(n_qubit):
     qubits = cirq.GridQubit.rect(1, n_qubit)
     qo = 0
     for i in range(n_qubit - 3):
-        qo += cirq.Y(qubits[i]) * cirq.Y(qubits[i + 1]) * cirq.Y(
-            qubits[i + 2]) * cirq.Y(qubits[i + 3])
+        qo += (
+            cirq.Y(qubits[i])
+            * cirq.Y(qubits[i + 1])
+            * cirq.Y(qubits[i + 2])
+            * cirq.Y(qubits[i + 3])
+        )
         qo += cirq.X(qubits[i]) * cirq.X(qubits[i + 2])
         qo += cirq.Z(qubits[i + 1]) * cirq.Z(qubits[i + 3])
-        qo += cirq.Z(qubits[i]) * cirq.Y(qubits[i + 1]) * cirq.X(
-            qubits[i + 2]) * cirq.Z(qubits[i + 3])
+        qo += (
+            cirq.Z(qubits[i])
+            * cirq.Y(qubits[i + 1])
+            * cirq.X(qubits[i + 2])
+            * cirq.Z(qubits[i + 3])
+        )
     return qo, qubits
 
 
-if __name__ == '__main__':
-    ham, qubits = tf_random_ham(5)
+def tf_random_ham_prepare(platform: str, n_qubits: int):
+    import os
+
+    if platform == "gpu":
+        import tensorflow as tf
+
+        gpu = tf.config.list_physical_devices("GPU")
+        tf.config.experimental.set_memory_growth(device=gpu[0], enable=True)
+    elif platform == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    else:
+        raise RuntimeError(
+            f"Platform {platform} for tf_random_ham_prepare unrecognized, should be cpu or gpu."
+        )
+    import tensorflow_quantum as tfq
+    from tensorflow_quantum.python import util
+
+    ham, qubits = tf_random_ham(n_qubits)
+    my_op = tfq.get_expectation_op()
+    circ = cirq.Circuit()
+    for i in qubits:
+        circ += cirq.H(i)
+    my_circuit_tensor = util.convert_to_tensor([circ])
+    my_paulis = util.convert_to_tensor([[ham]])
+
+    def run():
+        return my_op(my_circuit_tensor, [], [[]], my_paulis)
+
+    return run
+
+
+if __name__ == "__main__":
+    run = tf_random_ham_prepare("cpu", 5)
+    run()

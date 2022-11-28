@@ -14,12 +14,13 @@
 # ============================================================================
 """Generate 2 regular model."""
 
-from benchmark import SEED
 import networkx as nx
-
+import numpy as np
 from mindquantum.algorithm.nisq.qaoa import MaxCutAnsatz
-from mindquantum.simulator import Simulator
 from mindquantum.core.operators import Hamiltonian
+from mindquantum.simulator import Simulator
+
+from benchmark import SEED
 
 
 def mq_qaoa_exp(n_qubit, backend):
@@ -32,9 +33,19 @@ def mq_qaoa_exp(n_qubit, backend):
     return sim.get_expectation_with_grad(ham, circ), len(circ.params_name)
 
 
-if __name__ == '__main__':
+def mq_qaoa_prepare(backend: str, n_qubits: int):
+    mq_grad_ops, n_p = mq_qaoa_exp(n_qubits, backend)
+    p0 = np.random.uniform(-1, 1, n_p)
+
+    def run():
+        mq_grad_ops(p0)
+
+    return run
+
+
+if __name__ == "__main__":
     import numpy as np
 
-    grad_ops, n_p = mq_qaoa_exp(5, 'mqvector')
+    mq_grad_ops, n_p = mq_qaoa_exp(5, "mqvector")
     p0 = np.random.uniform(-1, 1, n_p)
-    f, g = grad_ops(p0)
+    f, g = mq_grad_ops(p0)

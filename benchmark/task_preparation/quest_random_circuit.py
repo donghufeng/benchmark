@@ -14,19 +14,25 @@
 # ============================================================================
 """quest random circuit"""
 import numpy as np
-import quest_test
-
-from benchmark import SEED
 
 
-def quest_random_circuit(n_qubits):
+def quest_random_circuit_prepare(platform: str, n_qubits: int):
+    if platform == "cpu":
+        import quest_test
+    elif platform == "gpu":
+        import quest_test_gpu as quest_test
+    else:
+        raise RuntimeError(f"platform {platform} not supported for quest.")
     test = quest_test.random_circuit_test(n_qubits)
-    return test.run, test.get_np()
+    p0 = np.random.uniform(-1, 1, test.get_np())
+
+    def run():
+        test.run(p0)
+        return test
+
+    return run
 
 
-if __name__ == '__main__':
-    n_qubits = 5
-    fun, num_pr = quest_random_circuit(n_qubits)
-    np.random.seed(SEED)
-    p0 = np.random.uniform(-1, 1, num_pr)
-    fun(p0)
+if __name__ == "__main__":
+    run = quest_random_circuit_prepare("cpu", 5)
+    run()

@@ -13,8 +13,8 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark of mindquantum."""
-import os
 import json
+import os
 from typing import Dict
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(__file__))
@@ -36,6 +36,6 @@ def get_config(task_name: str) -> Dict:
     return config[task_name]
 
 
-SEED = get_config('global_seed')
+SEED = get_config("global_seed")
 
 from . import task_preparation

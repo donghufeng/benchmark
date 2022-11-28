@@ -13,18 +13,20 @@
 # limitations under the License.
 # ============================================================================
 """quest random circuit"""
-import numpy as np
-import quest_test
-
-from benchmark import SEED
 
 
-def quest_random_ham(n_qubits):
+def quest_random_ham_prepare(platform: str, n_qubits: int):
+    if platform == "cpu":
+        import quest_test
+    elif platform == "gpu":
+        import quest_test_gpu as quest_test
+    else:
+        raise RuntimeError(f"platform {platform} not supported for quest.")
     test = quest_test.random_ham_test(n_qubits)
     return test.run
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     n_qubits = 5
-    fun = quest_random_ham(n_qubits)
+    fun = quest_random_ham_prepare("cpu", n_qubits)
     fun()

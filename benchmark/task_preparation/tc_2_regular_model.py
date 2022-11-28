@@ -14,13 +14,15 @@
 # ============================================================================
 """Generate 2 regular model."""
 
-from benchmark import SEED
 import networkx as nx
+import numpy as np
 
-import tensorcircuit as tc
+from benchmark import SEED
 
 
 def tc_qaoa_exp(n_qubit):
+    import tensorcircuit as tc
+
     net = nx.random_regular_graph(2, n_qubit, SEED)
     edges = list(net.edges)
 
@@ -44,13 +46,47 @@ def tc_qaoa_exp(n_qubit):
     return energy, len(edges) + n_qubit
 
 
-if __name__ == '__main__':
+def tc_qaoa_prepare(backend: str, platform: str, n_qubits: int):
+    import os
+
+    if platform == "gpu":
+        import tensorflow as tf
+
+        gpu = tf.config.list_physical_devices("GPU")
+        tf.config.experimental.set_memory_growth(device=gpu[0], enable=True)
+    elif platform == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    else:
+        raise RuntimeError(
+            f"Platform {platform} for tf_random_circuit_prepare unrecognized, should be cpu or gpu."
+        )
+
+    import tensorcircuit as tc
+
+    tc.set_backend(backend)
+    tc.set_dtype("complex128")
+    if backend != "tensorflow":
+        raise RuntimeError("We only benchmark for tensorflow backend.")
+    energy, n_p = tc_qaoa_exp(n_qubits)
+    p0 = tc.backend.cast(np.random.uniform(-1, 1, n_p), "float64")
+    g = tc.backend.value_and_grad(energy)
+    g = tc.backend.jit(g)
+
+    def run():
+        return g(p0)
+
+    return run
+
+
+if __name__ == "__main__":
     import numpy as np
-    tc.set_backend('tensorflow')
-    tc.set_dtype('complex128')
+    import tensorcircuit as tc
+
+    tc.set_backend("tensorflow")
+    tc.set_dtype("complex128")
 
     energy, n_p = tc_qaoa_exp(5)
-    p0 = tc.backend.cast(np.random.uniform(-1, 1, n_p), 'float64')
+    p0 = tc.backend.cast(np.random.uniform(-1, 1, n_p), "float64")
     g = tc.backend.value_and_grad(energy)
     g = tc.backend.jit(g)
     g(p0)

@@ -15,22 +15,23 @@
 """Generate mq random circuit."""
 
 import numpy as np
-
-from mindquantum.core.circuit import Circuit, UN, add_prefix, shift
+from mindquantum.core.circuit import UN, Circuit, add_prefix, shift
 from mindquantum.core.gates import (
-    H,
+    BARRIER,
     RX,
-    X,
-    T,
-    S,
-    PhaseShift,
+    SWAP,
     XX,
     YY,
     ZZ,
-    BARRIER,
+    H,
+    PhaseShift,
+    S,
+    T,
     UnivMathGate,
-    SWAP,
+    X,
 )
+from mindquantum.simulator import Simulator
+
 from benchmark import SEED
 
 
@@ -40,21 +41,21 @@ def random_circuit_template():
     circ += Circuit([RX(f"p{i}").on(i) for i in range(4)])
     circ += Circuit([X.on((i + 1) % 4, i) for i in range(4)])
 
-    circ += XX('p4').on([0, 1])
-    circ += YY('p5').on([1, 2])
-    circ += ZZ('p6').on([2, 3])
+    circ += XX("p4").on([0, 1])
+    circ += YY("p5").on([1, 2])
+    circ += ZZ("p6").on([2, 3])
     circ += BARRIER
     circ += UN(S, [0, 1]) + UN(T, [2, 3])
-    circ += PhaseShift('p7').on(1, 0)
-    circ += PhaseShift('p8').on(2, 3)
+    circ += PhaseShift("p7").on(1, 0)
+    circ += PhaseShift("p8").on(2, 3)
     circ += SWAP.on([0, 3])
-    circ += RX('p9').on(0, 1)
-    circ += RX('p10').on(3, 2)
+    circ += RX("p9").on(0, 1)
+    circ += RX("p10").on(3, 2)
     return circ
 
 
 def random_circuit_extend():
-    u = UnivMathGate('U', np.eye(16))
+    u = UnivMathGate("U", np.eye(16))
     circ = Circuit()
     circ += u.on([0, 1, 2, 3])
     circ += u.on([1, 2, 3, 4])
@@ -66,7 +67,7 @@ def mq_random_circuit_pqc(n_qubit):
     template = random_circuit_template()
     circ = Circuit()
     for i in range(n_qubit - 3):
-        circ += shift(add_prefix(template, f'l{i}'), i)
+        circ += shift(add_prefix(template, f"l{i}"), i)
     return circ
 
 
@@ -78,16 +79,29 @@ def mq_random_circuit(n_qubit):
     return circ.apply_value(pr)
 
 
+def mq_random_circuit_prepare(backend: str, n_qubits: str):
+    circ = mq_random_circuit(n_qubits)
+    sim = Simulator(backend, n_qubits)
+    circ.get_cpp_obj()
+
+    def run():
+        sim.reset()
+        sim.apply_circuit(circ)
+
+    return run
+
+
 if __name__ == "__main__":
-    from mindquantum import Simulator, Hamiltonian, QubitOperator
+    from mindquantum import Hamiltonian, QubitOperator, Simulator
+
     pqc = mq_random_circuit_pqc(10)
-    sim = Simulator('mqvector', pqc.n_qubits)
-    ham = Hamiltonian(QubitOperator('Y1'))
+    sim = Simulator("mqvector", pqc.n_qubits)
+    ham = Hamiltonian(QubitOperator("Y1"))
     grad_ops = sim.get_expectation_with_grad(ham, pqc)
     x0 = np.random.uniform(-1, 1, len(pqc.params_name))
     grad_ops(x0)
     circ = mq_random_circuit(10)
-    sim = Simulator('mqvector', 10)
+    sim = Simulator("mqvector", 10)
     sim.apply_circuit(circ)
     # ham = Hamiltonian(QubitOperator('Z0'))
     # sim = Simulator('mqvector',1)

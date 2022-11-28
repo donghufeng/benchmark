@@ -13,11 +13,11 @@
 # limitations under the License.
 # ============================================================================
 """Generate tc random circuit."""
-
-import tensorcircuit as tc
+import numpy as np
 
 
 def tc_random_circuit_pqc(n_qubit):
+    import tensorcircuit as tc
 
     def c_fun(params):
         circ = tc.Circuit(n_qubit)
@@ -51,15 +51,49 @@ def tc_random_circuit_pqc(n_qubit):
     return c_fun
 
 
-if __name__ == '__main__':
+def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
+    import os
+
+    if platform == "gpu":
+        import tensorflow as tf
+
+        gpu = tf.config.list_physical_devices("GPU")
+        tf.config.experimental.set_memory_growth(device=gpu[0], enable=True)
+    elif platform == "cpu":
+        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+    else:
+        raise RuntimeError(
+            f"Platform {platform} for tc_random_circuit_prepare unrecognized, should be cpu or gpu."
+        )
+
+    import tensorcircuit as tc
+
+    tc.set_backend(backend)
+    tc.set_dtype("complex128")
+    if backend != "tensorflow":
+        raise RuntimeError("We only benchmark for tensorflow backend.")
+    x = tc.backend.cast(np.random.uniform(-1, 1, 2 * 11), "float64")
+    c_fun = tc_random_circuit_pqc(n_qubits)
+    wave_fun = tc.backend.jit(lambda x: c_fun(x).wavefunction())
+
+    def run():
+        wave_fun(x)
+
+    return run
+
+
+if __name__ == "__main__":
     import numpy as np
-    tc.set_backend('tensorflow')
-    tc.set_dtype('complex128')
+    import tensorcircuit as tc
+
+    tc.set_backend("tensorflow")
+    tc.set_dtype("complex128")
 
     x = tc.backend.cast(np.random.uniform(-1, 1, 2 * 11), "float64")
     c_fun = tc_random_circuit_pqc(5)
     wave_fun = tc.backend.jit(lambda x: c_fun(x).wavefunction())
     wave_fun(x)
+
     def energy(x):
         circ = c_fun(x)
         e0 = circ.expectation((tc.gates.y(), [1]))

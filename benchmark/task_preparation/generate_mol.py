@@ -16,9 +16,9 @@
 
 import os
 
+from mindquantum.algorithm.nisq.chem import generate_uccsd
 from openfermion.chem import MolecularData
 from openfermionpyscf import run_pyscf
-from mindquantum.algorithm.nisq.chem import generate_uccsd
 
 from benchmark import TMP_PATH, get_config
 
@@ -37,7 +37,7 @@ def generate_molecule_data(geometry, file_name, file_path):
 
 
 def generate_vqe_circ_and_ham(mole_name):
-    task_name = 'vqe'
+    task_name = "vqe"
     config = get_config(task_name)
     geometry = config[mole_name]
     mole = generate_molecule_data(geometry, mole_name, TMP_PATH)

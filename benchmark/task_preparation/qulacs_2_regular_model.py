@@ -14,13 +14,21 @@
 # ============================================================================
 """Generate 2 regular model."""
 
-from benchmark import SEED
 import networkx as nx
 import numpy as np
-from qulacs import ParametricQuantumCircuit, QuantumState, Observable
+from qulacs import Observable, ParametricQuantumCircuit
 from qulacs.circuit import QuantumCircuitOptimizer
 
-def tx_qaoa_exp(n_qubit, backend=None):
+from benchmark import SEED
+
+
+def qulacs_qaoa_prepare(platform: str, n_qubit):
+    if platform == "gpu":
+        from qulacs_core import QuantumStateGpu as QuantumState
+    elif platform == "cpu":
+        from qulacs import QuantumState
+    else:
+        raise RuntimeError(f"platform {platform} not supported by qulacs.")
     net = nx.random_regular_graph(2, n_qubit, SEED)
     edges = list(net.edges)
     p0 = np.random.uniform(-1, 1, len(edges) + n_qubit)
@@ -37,17 +45,18 @@ def tx_qaoa_exp(n_qubit, backend=None):
         op.add_operator(1, f"Z {i} Z {j}")
     n_p = len(edges) + n_qubit
     QuantumCircuitOptimizer().optimize(circ, 1)
-    def fun(p):
+    p0 = np.random.uniform(-1, 1, n_p)
+
+    def run():
         for i in range(n_p):
-            circ.set_parameter(i, p[i])
+            circ.set_parameter(i, p0[i])
         return circ.backprop(op)
 
-    return fun, n_p
+    return run
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import numpy as np
 
-    grad_ops, n_p = tx_qaoa_exp(5)
-    p0 = np.random.uniform(-1, 1, n_p)
-    g = grad_ops(p0)
+    run = qulacs_qaoa_prepare(5)
+    run()

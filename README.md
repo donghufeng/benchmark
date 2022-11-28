@@ -2,16 +2,16 @@
 
 ## Frameworks
 
-|框架名称|公司|版本号|CPU|GPU|原生支持变分|Python API|jit|原生支持jw变换|
-|-|-|-|-|-|-|-|-|-|
-|MindQuantum|华为|0.8.0|✅|✅|✅|✅|✅|✅|
-|qiskit|IBM|0.38.0|✅|✅|❌|✅|❌|❌|
-|intel_qs|Intel|2.0.0-beta|✅|❌|❌|❌|❌|❌|
-|paddle quantum|Baidu|2.2.1|✅|✅|❌|✅|✅|❌|
-|tensorflow quantum|Google|0.7.2|✅|✅|✅|✅|✅|❌|
-|qulacs|Qulacs|0.5.2|✅|✅|✅|✅|❌|❌|
-|quest|Oxford|3.5.0|✅|✅|✅|❌|❌|❌|
-|tensorcircuit|Tencent|0.5.0|✅|✅|❌|✅|✅|❌|
+|框架名称|公司|版本号|CPU|GPU|原生支持变分|Python API|jit|原生支持jw变换|Benchmark进度|
+|-|-|-|-|-|-|-|-|-|-|
+|MindQuantum|华为|0.8.0|✅|✅|✅|✅|✅|✅|✅|
+|qiskit|IBM|0.38.0|✅|✅|❌|✅|❌|❌||
+|intel_qs|Intel|2.0.0-beta|✅|❌|❌|❌|❌|❌|✅|
+|paddle quantum|Baidu|2.2.1|✅|✅|❌|✅|✅|❌|✅|
+|tensorflow quantum|Google|0.7.2|✅|✅|✅|✅|✅|❌|✅|
+|qulacs|Qulacs|0.5.2|✅|✅|✅|✅|❌|❌|✅|
+|quest|Oxford|3.5.0|✅|✅|✅|❌|❌|❌|✅|
+|tensorcircuit|Tencent|0.5.0|✅|✅|❌|✅|✅|❌|✅|
 
 ## Benchmark task
 
@@ -69,6 +69,12 @@ $$Y_1$$
 -----adg--------------a-----a-------
 -----a-------adg------------adg-----
 -----adg--------------a-----adg-----
+```
+
+## task format
+
+```text
+def {framework_name}_{task_name}_prepare(*prep_args, **prep_kwargs): -> run_task_method
 ```
 
 ## Conclution

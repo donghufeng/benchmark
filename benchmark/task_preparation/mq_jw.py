@@ -14,8 +14,8 @@
 # ============================================================================
 """Generate mq random fermion jordan wigner transformation."""
 
-from mindquantum.core.operators import FermionOperator
 from mindquantum.algorithm.nisq.chem import Transform
+from mindquantum.core.operators import FermionOperator
 
 
 def random_fermion(n_qubit: int) -> FermionOperator:

@@ -147,7 +147,9 @@ class RandomHam : public BasicTestEnv {
     PauliHamil ham;
 };
 namespace py = pybind11;
-
+#ifdef ENABLE_GPU
+#    define quest_test quest_test_gpu
+#endif
 PYBIND11_MODULE(quest_test, m) {
     py::class_<BasicTestEnv, std::shared_ptr<BasicTestEnv>>(m, "basic_test_env")
         .def(py::init<int>())

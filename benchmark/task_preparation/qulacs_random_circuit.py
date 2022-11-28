@@ -15,14 +15,13 @@
 """Generate random circuit for qulacs."""
 import numpy as np
 from qulacs import (
-    QuantumState,
+    GradCalculator,
+    Observable,
     ParametricQuantumCircuit,
     QuantumCircuit,
+    QuantumState,
     gate,
-    Observable,
-    GradCalculator,
 )
-
 from qulacs_core import QuantumStateGpu
 
 from benchmark import SEED
@@ -46,10 +45,8 @@ def qulacs_random_circ(n_quits):
         circ.add_CNOT_gate(i + 2, i + 3)
         circ.add_CNOT_gate(i + 3, i)
         circ.add_multi_Pauli_rotation_gate([i, i + 1], [1, 1], p0[i * 11 + 4])
-        circ.add_multi_Pauli_rotation_gate([i + 1, i + 2], [2, 2],
-                                           p0[i * 11 + 5])
-        circ.add_multi_Pauli_rotation_gate([i + 2, i + 3], [3, 3],
-                                           p0[i * 11 + 6])
+        circ.add_multi_Pauli_rotation_gate([i + 1, i + 2], [2, 2], p0[i * 11 + 5])
+        circ.add_multi_Pauli_rotation_gate([i + 2, i + 3], [3, 3], p0[i * 11 + 6])
         circ.add_S_gate(i)
         circ.add_S_gate(i + 1)
         circ.add_T_gate(i + 2)
@@ -79,12 +76,15 @@ def qulacs_random_pqc(n_quits):
         circ.add_CNOT_gate(i + 1, i + 2)
         circ.add_CNOT_gate(i + 2, i + 3)
         circ.add_CNOT_gate(i + 3, i)
-        circ.add_parametric_multi_Pauli_rotation_gate([i, i + 1], [1, 1],
-                                                      p0[i * 11 + 4])
-        circ.add_parametric_multi_Pauli_rotation_gate([i + 1, i + 2], [2, 2],
-                                                      p0[i * 11 + 5])
-        circ.add_parametric_multi_Pauli_rotation_gate([i + 2, i + 3], [3, 3],
-                                                      p0[i * 11 + 6])
+        circ.add_parametric_multi_Pauli_rotation_gate(
+            [i, i + 1], [1, 1], p0[i * 11 + 4]
+        )
+        circ.add_parametric_multi_Pauli_rotation_gate(
+            [i + 1, i + 2], [2, 2], p0[i * 11 + 5]
+        )
+        circ.add_parametric_multi_Pauli_rotation_gate(
+            [i + 2, i + 3], [3, 3], p0[i * 11 + 6]
+        )
         circ.add_S_gate(i)
         circ.add_S_gate(i + 1)
         circ.add_T_gate(i + 2)
@@ -97,7 +97,25 @@ def qulacs_random_pqc(n_quits):
     return circ
 
 
-if __name__ == '__main__':
+def qulacs_random_circuit_prepare(platform: str, n_qubits: int):
+    if platform == "gpu":
+        QuantumState = QuantumStateGpu
+    elif platform == "cpu":
+        from qulacs import QuantumState
+    else:
+        raise RuntimeError(f"platform {platform} not supported by qulacs.")
+
+    qulacs_circ = qulacs_random_circ(n_qubits)
+
+    def run():
+        state = QuantumState(n_qubits)
+        qulacs_circ.update_quantum_state(state)
+        return state
+
+    return run
+
+
+if __name__ == "__main__":
     n_qubit = 10
     qulacs_circ = qulacs_random_circ(n_qubit)
     state = QuantumState(n_qubit)
@@ -109,8 +127,8 @@ if __name__ == '__main__':
     qulacs_grad_ops.calculate_grad(qulacs_pqc, ham)
     qulacs_pqc.backprop(ham)
     pqc = ParametricQuantumCircuit(1)
-    pqc.add_parametric_RX_gate(0,1)
+    pqc.add_parametric_RX_gate(0, 1)
     ham = Observable(1)
     ham.add_operator(1, "Z 0")
     pqc.backprop(ham)
-    qulacs_grad_ops.calculate_grad(pqc,ham)
+    qulacs_grad_ops.calculate_grad(pqc, ham)
