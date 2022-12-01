@@ -81,3 +81,7 @@ def {framework_name}_{task_name}_prepare(*prep_args, **prep_kwargs): -> run_task
 
 Parameter shift (relative slow) and adjoint gradient (relative fast).
 Only support rx, ry, rz, rot_pauli, only **CPU**.
+
+### TensorFlow Quantum
+
+Only support float type.

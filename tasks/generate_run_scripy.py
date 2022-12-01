@@ -18,65 +18,66 @@ tasks = TaskManage()
 # tasks.add_task("./intel/benchmark_random_circuit.py").add_arg("p", ["cpu"]).add_arg(
 #     "q", range(4, 24)
 # )
-tasks.add_task("./intel/benchmark_random_ham.py").add_arg("p", ["cpu"]).add_arg(
-    "q", range(4, 24)
-)
+# tasks.add_task("./intel/benchmark_random_ham.py").add_arg("p", ["cpu"]).add_arg(
+#     "q", range(4, 24)
+# )
 
 # tasks.add_task("./mindquantum/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
-tasks.add_task("./mindquantum/benchmark_random_ham.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 24))
-# tasks.add_task("./mindquantum/benchmark_2_regular_qaoa.py").add_arg(
+# tasks.add_task("./mindquantum/benchmark_random_ham.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
+# tasks.add_task("./mindquantum/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(5, 24))
 
 # tasks.add_task("./paddlequantum/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 20))
-tasks.add_task("./paddlequantum/benchmark_random_ham.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 16))
-# tasks.add_task("./paddlequantum/benchmark_2_regular_qaoa.py").add_arg(
+# tasks.add_task("./paddlequantum/benchmark_random_ham.py").add_arg(
 #     "p", ["cpu", "gpu"]
-# ).add_arg("q", range(4, 20))
+# ).add_arg("q", range(4, 16))
+tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
+    "p", ["cpu"]).add_arg("q", range(5, 20))
+tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
+    "p", ["gpu"]).add_arg("q", range(5, 23))
 
 # tasks.add_task("./quest/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
-tasks.add_task("./quest/benchmark_random_ham.py").add_arg("p", ["cpu", "gpu"]).add_arg(
-    "q", range(4, 24)
-)
+# tasks.add_task("./quest/benchmark_random_ham.py").add_arg("p", ["cpu", "gpu"]).add_arg(
+#     "q", range(4, 24)
+# )
 
 # tasks.add_task("./qulacs/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
-tasks.add_task("./qulacs/benchmark_random_ham.py").add_arg("p", ["cpu", "gpu"]).add_arg(
-    "q", range(4, 24)
-)
-# tasks.add_task("./qulacs/benchmark_2_regular_qaoa.py").add_arg(
-#     "p", ["cpu", "gpu"]
-# ).add_arg("q", range(4, 24))
+# tasks.add_task("./qulacs/benchmark_random_ham.py").add_arg("p", ["cpu", "gpu"]).add_arg(
+#     "q", range(4, 24)
+# )
+# tasks.add_task("./qulacs/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu"]
+# ).add_arg("q", range(5, 24))
 
 # tasks.add_task("./tensorcircuit/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 22))
-tasks.add_task("./tensorcircuit/benchmark_random_ham.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 18))
-# tasks.add_task("./tensorcircuit/benchmark_2_regular_qaoa.py").add_arg(
+# tasks.add_task("./tensorcircuit/benchmark_random_ham.py").add_arg(
 #     "p", ["cpu", "gpu"]
-# ).add_arg("q", range(4, 22))
+# ).add_arg("q", range(4, 18))
+# tasks.add_task("./tensorcircuit/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(5, 22))
 
 # tasks.add_task("./tensorflowquantum/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
-tasks.add_task("./tensorflowquantum/benchmark_random_ham.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 24))
-# tasks.add_task("./tensorflowquantum/benchmark_2_regular_qaoa.py").add_arg(
+# tasks.add_task("./tensorflowquantum/benchmark_random_ham.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 24))
+# tasks.add_task("./tensorflowquantum/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(5, 24))
 
 tasks.generate_script()
