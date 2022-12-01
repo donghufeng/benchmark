@@ -20,40 +20,38 @@
 |任务名称|描述|比特范围|哈密顿量项数|量子门个数|OMP|Layer|
 |-|-|-|-|-|-|-|
 |random_circuit_qs|随机量子线路振幅模拟|4-24|/|25*n|1-8|/|
-|random_circuit_gradient|随机参数化量子线路梯度计算|4-24|1, Y1|25*n|1-8|/|
 |random_hamiltonian_expectation|随机哈密顿量期望值|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
 |maxcut_random_2_regular_with_qaoa|利用qaoa解决随机2-regular的maxcut问题|4-24|/|/|1-8|1|
-|jw_transform|费米子算符jordan wigner变换|4-24|/|/|1-8|/|
 
 ## Task Detail
 
-### random_circuit_gradient
-
-4比特线路模板
-
-![random_circuit](./docs/random_circuit_tmp.png)
-
-线路扩展
-
-![random_circuit](./docs/random_circuit_tmp_ext.png)
-
-测量哈密顿量
-
-$$Y_1$$
-
 ### random_circuit_qs
 
-与上述任务相同，将所有参数门参数选为随机值即可。
+量子门可选集合：
+
+```text
+x, y, z, h, s, t, cx, cy, cz, rx, ry, rz, xx, yy, zz
+```
+
+总量子门个数公式：
+
+$$N = 40(4-n) + 1000$$
+
+统一随机数种子。
 
 ### random_hamiltonian_expectation
 
-初始态为均匀叠加态。
+可选 Qubit 算符：
 
-4比特模板：
+```text
+X, Y, Z
+```
 
-![ham_temp](./docs/ham_temp.png)
+总算符数公式：
 
-扩展方式与上述任务相同。
+$$N = 48(4-n) + 1000$$
+
+统一随机数种子。
 
 ### maxcut_random_2_regular_with_qaoa
 

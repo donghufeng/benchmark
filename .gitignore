@@ -6,3 +6,5 @@ tmp*
 .cache
 build
 *.so
+.vscode
+

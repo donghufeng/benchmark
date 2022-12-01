@@ -13,28 +13,20 @@
 # limitations under the License.
 # ============================================================================
 "tensorflow random quantum ham"
+from benchmark.task_preparation import generate_random_ham
 
 
 def tf_random_ham(n_qubit):
     import cirq
 
+    ham_text = generate_random_ham(n_qubit)
     qubits = cirq.GridQubit.rect(1, n_qubit)
     qo = 0
-    for i in range(n_qubit - 3):
-        qo += (
-            cirq.Y(qubits[i])
-            * cirq.Y(qubits[i + 1])
-            * cirq.Y(qubits[i + 2])
-            * cirq.Y(qubits[i + 3])
-        )
-        qo += cirq.X(qubits[i]) * cirq.X(qubits[i + 2])
-        qo += cirq.Z(qubits[i + 1]) * cirq.Z(qubits[i + 3])
-        qo += (
-            cirq.Z(qubits[i])
-            * cirq.Y(qubits[i + 1])
-            * cirq.X(qubits[i + 2])
-            * cirq.Z(qubits[i + 3])
-        )
+    for term in ham_text:
+        tmp = 1
+        for q, i in term:
+            tmp *= getattr(cirq, q)(qubits[i])
+        qo += tmp
     return qo, qubits
 
 
@@ -72,4 +64,4 @@ def tf_random_ham_prepare(platform: str, n_qubits: int):
 
 if __name__ == "__main__":
     run = tf_random_ham_prepare("cpu", 5)
-    run()
+    print(run())

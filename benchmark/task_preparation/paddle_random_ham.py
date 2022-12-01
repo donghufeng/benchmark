@@ -13,6 +13,12 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark expectation of random hamiltonian."""
+from benchmark.task_preparation import generate_random_ham
+
+
+def ham_trans(ham_text):
+    out = [[1, ",".join(f"{i.lower()}{j}" for i, j in term)] for term in ham_text]
+    return out
 
 
 def paddle_random_ham_prepare(platform: str, n_qubits: int):
@@ -26,12 +32,7 @@ def paddle_random_ham_prepare(platform: str, n_qubits: int):
         raise ValueError(f"platform {platform} is not supported for paddle quantum.")
     import paddle_quantum as pdq
 
-    H_D_list = []
-    for i in range(n_qubits - 3):
-        H_D_list.append([1.0, f"y{i},y{i+1},y{i+2},y{i+3}"])
-        H_D_list.append([1.0, f"x{i},x{i+2}"])
-        H_D_list.append([1.0, f"z{i+1},z{i+3}"])
-        H_D_list.append([1.0, f"z{i},y{i+1},x{i+2},z{i+3}"])
+    H_D_list = ham_trans(generate_random_ham(n_qubits))
     ham = pdq.Hamiltonian(H_D_list)
     exp = pdq.loss.ExpecVal(ham)
     circ = pdq.ansatz.Circuit(n_qubits)
@@ -44,6 +45,6 @@ def paddle_random_ham_prepare(platform: str, n_qubits: int):
 
 
 if __name__ == "__main__":
-    n_qubits = 5
+    n_qubits = 4
     run = paddle_random_ham_prepare("cpu", n_qubits)
     run()

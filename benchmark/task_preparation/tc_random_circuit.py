@@ -15,40 +15,27 @@
 """Generate tc random circuit."""
 import numpy as np
 
+from benchmark.task_preparation import generate_random_circuit
 
-def tc_random_circuit_pqc(n_qubit):
+
+def tc_random_circuit(n_qubit):
     import tensorcircuit as tc
 
-    def c_fun(params):
-        circ = tc.Circuit(n_qubit)
-        for i in range(n_qubit - 3):
-            circ.h(i)
-            circ.h(i + 1)
-            circ.h(i + 2)
-            circ.h(i + 3)
-            circ.rx(i, theta=params[i * 11])
-            circ.rx(i + 1, theta=params[i * 11 + 1])
-            circ.rx(i + 2, theta=params[i * 11 + 2])
-            circ.rx(i + 3, theta=params[i * 11 + 3])
-            circ.cx(i, i + 1)
-            circ.cx(i + 1, i + 2)
-            circ.cx(i + 2, i + 3)
-            circ.cx(i + 3, i)
-            circ.rxx(i, i + 1, theta=params[i * 11 + 4])
-            circ.ryy(i + 1, i + 2, theta=params[i * 11 + 5])
-            circ.rzz(i + 2, i + 3, theta=params[i * 11 + 6])
-            circ.s(i)
-            circ.s(i + 1)
-            circ.t(i + 2)
-            circ.t(i + 3)
-            circ.cphase(i, i + 1, theta=params[i * 11 + 7])
-            circ.cphase(i + 3, i + 2, theta=params[i * 11 + 8])
-            circ.swap(i, i + 3)
-            circ.crx(i + 1, i, theta=params[i * 11 + 9])
-            circ.crx(i + 2, i + 3, theta=params[i * 11 + 10])
-        return circ
-
-    return c_fun
+    circ = tc.Circuit(n_qubit)
+    circ_text = generate_random_circuit(n_qubit)
+    for gate_args in circ_text:
+        gate = gate_args[0]
+        if gate in ["x", "y", "z", "h", "s", "t"]:
+            getattr(circ, gate)(gate_args[1])
+        elif gate in ["cx", "cy", "cz"]:
+            getattr(circ, gate)(gate_args[1], gate_args[2])
+        elif gate in ["rx", "ry", "rz"]:
+            getattr(circ, gate)(gate_args[1], theta=gate_args[2])
+        elif gate in ["xx", "yy", "zz"]:
+            getattr(circ, f"r{gate}")(gate_args[1], gate_args[2], theta=gate_args[3])
+        else:
+            raise RuntimeError()
+    return circ
 
 
 def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
@@ -72,12 +59,11 @@ def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
     tc.set_dtype("complex128")
     if backend != "tensorflow":
         raise RuntimeError("We only benchmark for tensorflow backend.")
-    x = tc.backend.cast(np.random.uniform(-1, 1, (n_qubits - 3) * 11), "float64")
-    c_fun = tc_random_circuit_pqc(n_qubits)
-    wave_fun = tc.backend.jit(lambda x: c_fun(x).wavefunction())
+    c_fun = tc_random_circuit(n_qubits)
+    # wave_fun = tc.backend.jit(c_fun.wavefunction)  # too long
 
     def run():
-        wave_fun(x)
+        return c_fun.wavefunction()
 
     return run
 

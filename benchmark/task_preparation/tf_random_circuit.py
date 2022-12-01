@@ -16,45 +16,38 @@
 import numpy as np
 import sympy
 
+from benchmark.task_preparation import generate_random_circuit
+
 
 def tf_random_circuit(n_qubit):
     import cirq
 
-    def c_fun(params):
-        qubits = cirq.GridQubit.rect(1, n_qubit)
-        circ = cirq.Circuit()
-        for i in range(n_qubit - 3):
-            circ += cirq.H(qubits[i])
-            circ += cirq.H(qubits[i + 1])
-            circ += cirq.H(qubits[i + 2])
-            circ += cirq.H(qubits[i + 3])
-            circ += cirq.Rx(rads=params[i * 11]).on(qubits[i])
-            circ += cirq.Rx(rads=params[i * 11 + 1]).on(qubits[i + 1])
-            circ += cirq.Rx(rads=params[i * 11 + 2]).on(qubits[i + 2])
-            circ += cirq.Rx(rads=params[i * 11 + 3]).on(qubits[i + 3])
-            circ += cirq.CX(qubits[i], qubits[i + 1])
-            circ += cirq.CX(qubits[i + 1], qubits[i + 2])
-            circ += cirq.CX(qubits[i + 2], qubits[i + 3])
-            circ += cirq.CX(qubits[i + 3], qubits[i])
-            circ += cirq.XX(qubits[i], qubits[i + 1]) ** params[i * 11 + 4]
-            circ += cirq.YY(qubits[i + 1], qubits[i + 2]) ** params[i * 11 + 5]
-            circ += cirq.ZZ(qubits[i + 2], qubits[i + 3]) ** params[i * 11 + 6]
-            circ += cirq.S(qubits[i])
-            circ += cirq.S(qubits[i + 1])
-            circ += cirq.T(qubits[i + 2])
-            circ += cirq.T(qubits[i + 3])
-            circ += cirq.cphase(rads=params[i * 11 + 7]).on(qubits[i], qubits[i + 1])
-            circ += cirq.cphase(rads=params[i * 11 + 8]).on(
-                qubits[i + 3], qubits[i + 2]
+    qubits = cirq.GridQubit.rect(1, n_qubit)
+    circ = cirq.Circuit()
+    circ_text = generate_random_circuit(n_qubit)
+    for gate_args in circ_text:
+        gate = gate_args[0]
+        gate: str
+        if gate in ["x", "y", "z", "h", "s", "t"]:
+            circ += getattr(cirq, gate.upper())(qubits[gate_args[1]])
+        elif gate in ["cx", "cz"]:
+            circ += getattr(cirq, gate.upper())(
+                qubits[gate_args[1]], qubits[gate_args[2]]
             )
-            circ += cirq.SWAP(qubits[i], qubits[i + 3])
-            circ += cirq.CXPowGate().on(qubits[i], qubits[i + 1]) ** params[i * 11 + 9]
+        elif gate == "cy":
+            circ += cirq.Y(qubits[gate_args[2]]).controlled_by(qubits[gate_args[1]])
+        elif gate in ["rx", "ry", "rz"]:
+            circ += getattr(cirq, f"R{gate[-1]}")(rads=gate_args[2]).on(
+                qubits[gate_args[1]]
+            )
+        elif gate in ["xx", "yy", "zz"]:
             circ += (
-                cirq.CXPowGate().on(qubits[i + 2], qubits[i + 3]) ** params[i * 11 + 10]
+                getattr(cirq, gate.upper())(qubits[gate_args[1]], qubits[gate_args[2]])
+                ** gate_args[3]
             )
-        return circ, qubits
-
-    return c_fun
+        else:
+            raise RuntimeError()
+    return circ
 
 
 def tf_random_circuit_prepare(platform: str, n_qubits: int):
@@ -74,37 +67,15 @@ def tf_random_circuit_prepare(platform: str, n_qubits: int):
     from tensorflow_quantum.core.ops import tfq_simulate_ops
     from tensorflow_quantum.core.serialize.serializer import serialize_circuit
 
-    p = [f"p{i}" for i in range((n_qubits - 3) * 11)]
-    p = sympy.symbols(" ".join(p))
-    p0 = np.random.uniform(-1, 1, len(p))
-    circ, _ = tf_random_circuit(n_qubits)(p)
+    circ = tf_random_circuit(n_qubits)
     circ = str(serialize_circuit(circ))
-    sp = [str(i) for i in p]
 
     def run():
-        return tfq_simulate_ops.tfq_simulate_state([circ], sp, [p0])
+        return tfq_simulate_ops.tfq_simulate_state([circ], [], [[]])
 
     return run
 
 
 if __name__ == "__main__":
-    import cirq
-    import numpy as np
-    import sympy
-    from tensorflow_quantum.core.ops import tfq_simulate_ops
-    from tensorflow_quantum.core.serialize.serializer import serialize_circuit
-    from tensorflow_quantum.python import util
-
-    p = [f"p{i}" for i in range(2 * 11)]
-    p = sympy.symbols(" ".join(p))
-    p0 = np.random.uniform(-1, 1, 2 * 11)
-    circ, qubits = tf_random_circuit(5)(p)
-    tfq_simulate_ops.tfq_simulate_state(
-        [str(serialize_circuit(circ))], [str(i) for i in p], [p0]
-    )
-    # ham = cirq.PauliSum.from_pauli_strings(cirq.PauliString(1, cirq.Y(qubits[1])))
-    ham = cirq.Y(qubits[1])
-    ham_tensor = util.convert_to_tensor([[ham]])
-    tfq_simulate_ops.tfq_simulate_expectation(
-        [str(serialize_circuit(circ))], [str(i) for i in p], [p0], ham_tensor
-    )
+    run = tf_random_circuit_prepare("cpu", 5)
+    run()

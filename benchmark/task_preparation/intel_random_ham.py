@@ -15,25 +15,26 @@
 """Benchmark expectation of random ham on intel simulator."""
 import intelqs_py as simulator
 
+from benchmark.task_preparation import generate_random_ham
+
+
+def ham_trans(ham_text):
+    ham = []
+    for term in ham_text:
+        idx = []
+        pauli = []
+        for p, i in term:
+            idx.append(i)
+            pauli.append(ord(p) - ord("X") + 1)
+        ham.append([idx, pauli])
+    return ham
+
 
 def intel_random_ham_prepare(n_qubits: int):
     psi = simulator.QubitRegister(n_qubits, "base", 0, 0)
     for i in range(n_qubits):
         psi.ApplyHadamard(i)
-    ham = []
-    for i in range(n_qubits - 3):
-        ham.append([])
-        ham[-1].append([i, i + 1, i + 2, i + 3])
-        ham[-1].append([2, 2, 2, 2])
-        ham.append([])
-        ham[-1].append([i, i + 2])
-        ham[-1].append([1, 1])
-        ham.append([])
-        ham[-1].append([i + 1, i + 3])
-        ham[-1].append([3, 3])
-        ham.append([])
-        ham[-1].append([i, i + 1, i + 2, i + 3])
-        ham[-1].append([3, 2, 1, 3])
+    ham = ham_trans(generate_random_ham(n_qubits))
 
     def run():
         e0 = 0
@@ -45,6 +46,6 @@ def intel_random_ham_prepare(n_qubits: int):
 
 
 if __name__ == "__main__":
-    n_qubits = 5
-    ops = intel_random_ham_prepare(n_qubits)
-    ops()
+    n_qubits = 4
+    run = intel_random_ham_prepare(n_qubits)
+    run()

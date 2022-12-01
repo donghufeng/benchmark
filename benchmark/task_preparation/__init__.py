@@ -13,3 +13,5 @@
 # limitations under the License.
 # ============================================================================
 """Prepare tasks."""
+from .random_circuit import generate_random_circuit
+from .random_hamiltonian import generate_random_ham

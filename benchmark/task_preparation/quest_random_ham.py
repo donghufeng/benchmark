@@ -13,6 +13,7 @@
 # limitations under the License.
 # ============================================================================
 """quest random circuit"""
+from benchmark.task_preparation import generate_random_ham
 
 
 def quest_random_ham_prepare(platform: str, n_qubits: int):
@@ -22,11 +23,11 @@ def quest_random_ham_prepare(platform: str, n_qubits: int):
         import quest_test_gpu as quest_test
     else:
         raise RuntimeError(f"platform {platform} not supported for quest.")
-    test = quest_test.random_ham_test(n_qubits)
+    test = quest_test.random_ham_test(n_qubits, generate_random_ham(n_qubits))
     return test.run
 
 
 if __name__ == "__main__":
-    n_qubits = 5
-    fun = quest_random_ham_prepare("cpu", n_qubits)
-    fun()
+    n_qubits = 4
+    run = quest_random_ham_prepare("cpu", n_qubits)
+    print(run())

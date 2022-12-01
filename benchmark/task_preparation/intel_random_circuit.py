@@ -13,9 +13,10 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark random circuit for intel."""
-
 import intelqs_py as simulator
 import numpy as np
+
+from benchmark.task_preparation import generate_random_circuit
 
 pi_2 = np.pi / 2
 
@@ -51,41 +52,67 @@ def apply_s(psi, i):
     psi.ApplyT(i)
 
 
-def intel_random_circuit(n_qubits, params):
-    psi = simulator.QubitRegister(n_qubits, "base", 0, 0)
-    for i in range(n_qubits - 3):
-        psi.ApplyHadamard(i)
-        psi.ApplyHadamard(i + 1)
-        psi.ApplyHadamard(i + 2)
-        psi.ApplyHadamard(i + 3)
-        psi.ApplyRotationX(i, params[i * 11])
-        psi.ApplyRotationX(i + 1, params[i * 11 + 1])
-        psi.ApplyRotationX(i + 2, params[i * 11 + 2])
-        psi.ApplyRotationX(i + 3, params[i * 11 + 3])
-        psi.ApplyCPauliX(i, i + 1)
-        psi.ApplyCPauliX(i + 1, i + 2)
-        psi.ApplyCPauliX(i + 2, i + 3)
-        psi.ApplyCPauliX(i + 3, i)
-        apply_xx(psi, i, i + 1, params[i * 11 + 4])
-        apply_yy(psi, i + 1, i + 2, params[i * 11 + 5])
-        apply_zz(psi, i + 2, i + 3, params[i * 11 + 6])
-        apply_s(psi, i)
-        apply_s(psi, i + 1)
-        psi.ApplyT(i + 2)
-        psi.ApplyT(i + 3)
-        psi.ApplyCRotationZ(i, i + 1, params[i * 11 + 7])
-        psi.ApplyCRotationZ(i + 3, i + 2, params[i * 11 + 8])
-        psi.ApplySwap(i, i + 3)
-        psi.ApplyCRotationX(i + 1, i, params[i * 11 + 9])
-        psi.ApplyCRotationX(i + 2, i + 3, params[i * 11 + 10])
-    return psi
+def generate_intel_circuit(psi, n_qubits: int):
+    out = []
+    circ_text = generate_random_circuit(n_qubits)
+    for gate_args in circ_text:
+        gate = gate_args[0]
+        if gate in ["x", "y", "z"]:
+            out.append([getattr(psi, f"ApplyPauli{gate.upper()}"), (gate_args[1],)])
+        elif gate == "h":
+            out.append([psi.ApplyHadamard, (gate_args[1],)])
+        elif gate == "s":
+            out.append([lambda poi: apply_s(psi, poi), (gate_args[1],)])
+        elif gate == "t":
+            out.append([psi.ApplyT, (gate_args[1],)])
+        elif gate in ["cx", "cy", "cz"]:
+            out.append(
+                [
+                    getattr(psi, f"ApplyCPauli{gate[-1].upper()}"),
+                    (gate_args[1], gate_args[2]),
+                ]
+            )
+        elif gate in ["rx", "ry", "rz"]:
+            out.append(
+                [
+                    getattr(psi, f"ApplyRotation{gate[-1].upper()}"),
+                    (gate_args[1], gate_args[2]),
+                ]
+            )
+        elif gate == "xx":
+            out.append(
+                [
+                    lambda q1, q2, p: apply_xx(psi, q1, q2, p),
+                    (gate_args[1], gate_args[2], gate_args[3]),
+                ]
+            )
+        elif gate == "yy":
+            out.append(
+                [
+                    lambda q1, q2, p: apply_yy(psi, q1, q2, p),
+                    (gate_args[1], gate_args[2], gate_args[3]),
+                ]
+            )
+        elif gate == "zz":
+            out.append(
+                [
+                    lambda q1, q2, p: apply_zz(psi, q1, q2, p),
+                    (gate_args[1], gate_args[2], gate_args[3]),
+                ]
+            )
+        else:
+            raise RuntimeError()
+    return out
 
 
 def intel_random_circuit_prepare(n_qubits: int):
-    p0 = np.random.uniform(-1, 1, (n_qubits - 3) * 11)
+    psi = simulator.QubitRegister(n_qubits, "base", 0, 0)
+    circ = generate_intel_circuit(psi, n_qubits)
 
     def run():
-        return intel_random_circuit(n_qubits, p0)
+        for i in circ:
+            i[0](*i[1])
+        return psi
 
     return run
 
@@ -94,5 +121,4 @@ if __name__ == "__main__":
     import numpy as np
 
     n_qubits = 10
-    p0 = np.random.uniform(-1, 1, (n_qubits - 3) * 11)
-    intel_random_circuit(n_qubits, p0)
+    run = intel_random_circuit_prepare(n_qubits)

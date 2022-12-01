@@ -15,14 +15,14 @@
 """Generate random hamiltonian of qulacs."""
 from qulacs import Observable, QuantumCircuit
 
+from benchmark.task_preparation import generate_random_ham
+
 
 def qulacs_random_ham(n_qubit) -> Observable:
+    ham_text = generate_random_ham(n_qubit)
     qo = Observable(n_qubit)
-    for i in range(n_qubit - 3):
-        qo.add_operator(1, f"Y {i} Y {i+1} Y {i+2} Y {i+3}")
-        qo.add_operator(1, f"X {i} X {i+2}")
-        qo.add_operator(1, f"Z {i+1} Z {i+3}")
-        qo.add_operator(1, f"Z {i} Y {i+1} X {i+2} Z {i+3}")
+    for term in ham_text:
+        qo.add_operator(1, " ".join(f"{i} {j}" for i, j in term))
     return qo
 
 
@@ -47,10 +47,5 @@ def qulacs_random_ham_prepare(platform: str, n_qubits: int):
 
 
 if __name__ == "__main__":
-    from qulacs import QuantumCircuit, QuantumState
-    from qulacs_core import QuantumStateGpu
-
-    n_qubit = 15
-    qulacs_states = QuantumState(n_qubit)
-    qo = qulacs_random_ham(n_qubit)
-    res = qo.get_expectation_value(qulacs_states)
+    run = qulacs_random_ham_prepare("cpu", 4)
+    print(run())

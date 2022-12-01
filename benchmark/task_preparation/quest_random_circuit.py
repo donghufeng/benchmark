@@ -13,7 +13,7 @@
 # limitations under the License.
 # ============================================================================
 """quest random circuit"""
-import numpy as np
+from benchmark.task_preparation import generate_random_circuit
 
 
 def quest_random_circuit_prepare(platform: str, n_qubits: int):
@@ -24,10 +24,11 @@ def quest_random_circuit_prepare(platform: str, n_qubits: int):
     else:
         raise RuntimeError(f"platform {platform} not supported for quest.")
     test = quest_test.random_circuit_test(n_qubits)
-    p0 = np.random.uniform(-1, 1, test.get_np())
+    circ_text = generate_random_circuit(n_qubits)
 
     def run():
-        test.run(p0)
+        for g in circ_text:
+            test.apply_gate(*g)
         return test
 
     return run

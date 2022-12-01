@@ -1,7 +1,9 @@
 #include "QuEST.h"
 
+#include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 #include <pybind11/numpy.h>
@@ -44,112 +46,116 @@ class RandomCircuit : public BasicTestEnv {
     int get_np() {
         return (n_qubits - 3) * 11;
     }
-
-    void run(std::vector<double> p0) {
-        for (int i = 0; i < n_qubits - 3; i++) {
-            hadamard(qubits, i);
-            hadamard(qubits, i + 1);
-            hadamard(qubits, i + 2);
-            hadamard(qubits, i + 3);
-            rotateX(qubits, i, p0[i * 11]);
-            rotateX(qubits, i + 1, p0[i * 11 + 1]);
-            rotateX(qubits, i + 2, p0[i * 11 + 2]);
-            rotateX(qubits, i + 3, p0[i * 11 + 3]);
-            controlledNot(qubits, i, i + 1);
-            controlledNot(qubits, i + 1, i + 2);
-            controlledNot(qubits, i + 2, i + 3);
-            controlledNot(qubits, i + 3, i);
-            int idx1[2] = {i, i + 1};
-            int idx2[2] = {i + 1, i + 2};
-            int idx3[2] = {i + 2, i + 3};
-            pauliOpType pdx1[2] = {PAULI_X, PAULI_X};
-            pauliOpType pdx2[2] = {PAULI_Y, PAULI_Y};
-            pauliOpType pdx3[2] = {PAULI_Z, PAULI_Z};
-            multiRotatePauli(qubits, idx1, pdx1, 2, p0[i * 11 + 4]);
-            multiRotatePauli(qubits, idx2, pdx2, 2, p0[i * 11 + 5]);
-            multiRotatePauli(qubits, idx3, pdx3, 2, p0[i * 11 + 6]);
-            sGate(qubits, i);
-            sGate(qubits, i + 1);
-            tGate(qubits, i + 2);
-            tGate(qubits, i + 3);
-            rotateY(qubits, i + 1, p0[i * 11 + 7]);
-            rotateY(qubits, i + 2, p0[i * 11 + 8]);
-            swapGate(qubits, i, i + 3);
-            rotateX(qubits, i, p0[i * 11 + 9]);
-            rotateX(qubits, i + 3, p0[i * 11 + 10]);
+    void apply_gate(std::string name, int q1, int q2, double coeff) {
+        if (name == "x") {
+            pauliX(qubits, q1);
+        } else if (name == "y") {
+            pauliY(qubits, q1);
+        } else if (name == "z") {
+            pauliZ(qubits, q1);
+        } else if (name == "h") {
+            hadamard(qubits, q1);
+        } else if (name == "s") {
+            sGate(qubits, q1);
+        } else if (name == "t") {
+            tGate(qubits, q1);
+        } else if (name == "cx") {
+            controlledNot(qubits, q1, q2);
+        } else if (name == "cy") {
+            controlledPauliY(qubits, q1, q2);
+        } else if (name == "cz") {
+            controlledPhaseFlip(qubits, q1, q2);
+        } else if (name == "rx") {
+            rotateX(qubits, q1, coeff);
+        } else if (name == "ry") {
+            rotateY(qubits, q1, coeff);
+        } else if (name == "rz") {
+            rotateZ(qubits, q1, coeff);
+        } else if (name == "xx") {
+            int targetQubits[2] = {q1, q2};
+            pauliOpType targetPaulis[2] = {PAULI_X, PAULI_X};
+            multiRotatePauli(qubits, targetQubits, targetPaulis, 2, coeff);
+        } else if (name == "yy") {
+            int targetQubits[2] = {q1, q2};
+            pauliOpType targetPaulis[2] = {PAULI_Y, PAULI_Y};
+            multiRotatePauli(qubits, targetQubits, targetPaulis, 2, coeff);
+        } else if (name == "zz") {
+            int targetQubits[2] = {q1, q2};
+            pauliOpType targetPaulis[2] = {PAULI_Z, PAULI_Z};
+            multiRotatePauli(qubits, targetQubits, targetPaulis, 2, coeff);
+        } else {
+            throw std::runtime_error("gate no implement for quest");
         }
+    }
+    void apply_gate(std::string name, int q1) {
+        apply_gate(name, q1, 0, 0.0);
+    }
+    void apply_gate(std::string name, int q1, int q2) {
+        apply_gate(name, q1, q2, 0.0);
+    }
+    void apply_gate(std::string name, int q1, double coeff) {
+        apply_gate(name, q1, 0, coeff);
     }
 };
 
 class RandomHam : public BasicTestEnv {
  public:
-    explicit RandomHam(int n_qubits) : BasicTestEnv(n_qubits) {
-        std::vector<qreal> coeffs(get_nterms(), 1.0);
-        enum pauliOpType* paulis = new enum pauliOpType[n_qubits * 4 * (n_qubits - 3)];
-        int idx = 0;
-        for (int i = 0; i < n_qubits - 3; i++) {
-            {
-                std::vector<pauliOpType> current(n_qubits, PAULI_I);
-                current[i] = PAULI_Y;
-                current[i + 1] = PAULI_Y;
-                current[i + 2] = PAULI_Y;
-                current[i + 3] = PAULI_Y;
-                for (auto p : current) {
-                    paulis[idx++] = p;
+    explicit RandomHam(int n_qubits, const std::vector<std::vector<std::pair<std::string, int>>>& py_hams)
+        : BasicTestEnv(n_qubits) {
+        terms = py_hams.size();
+        pauliCodes = reinterpret_cast<pauliOpType*>(malloc(sizeof(pauliOpType) * n_qubits * terms));
+        termCoeffs = reinterpret_cast<qreal*>(malloc(sizeof(qreal) * terms));
+        for (size_t i = 0; i < py_hams.size(); ++i) {
+            termCoeffs[i] = 1;
+        }
+        int poi = 0;
+        for (auto& term : py_hams) {
+            std::vector<pauliOpType> current(n_qubits, PAULI_I);
+            for (auto& [p, idx] : term) {
+                if (p == "X") {
+                    current[idx] = PAULI_X;
+                } else if (p == "Y") {
+                    current[idx] = PAULI_Y;
+                } else if (p == "Z") {
+                    current[idx] = PAULI_Z;
+                } else {
+                    throw std::runtime_error("");
                 }
             }
-            {
-                std::vector<pauliOpType> current(n_qubits, PAULI_I);
-                current[i] = PAULI_X;
-                current[i + 2] = PAULI_X;
-                for (auto p : current) {
-                    paulis[idx++] = p;
-                }
-            }
-            {
-                std::vector<pauliOpType> current(n_qubits, PAULI_I);
-                current[i + 1] = PAULI_Z;
-                current[i + 3] = PAULI_Z;
-                for (auto p : current) {
-                    paulis[idx++] = p;
-                }
-            }
-            {
-                std::vector<pauliOpType> current(n_qubits, PAULI_I);
-                current[i] = PAULI_Z;
-                current[i + 1] = PAULI_Y;
-                current[i + 2] = PAULI_X;
-                current[i + 3] = PAULI_Z;
-                for (auto p : current) {
-                    paulis[idx++] = p;
-                }
+            for (auto a : current) {
+                pauliCodes[poi++] = a;
             }
         }
-        ham = {paulis, coeffs.data(), get_nterms(), n_qubits};
         for (int i = 0; i < n_qubits; i++) {
             hadamard(qubits, i);
         }
     }
-
     auto run() {
         auto workspace = createQureg(n_qubits, env);
 
-        auto res = calcExpecPauliSum(qubits, ham.pauliCodes, ham.termCoeffs, get_nterms(), workspace);
+        auto res = calcExpecPauliSum(qubits, pauliCodes, termCoeffs, get_nterms(), workspace);
         destroyQureg(workspace, env);
         return res;
     }
 
     int get_nterms() {
-        return 4 * (n_qubits - 3);
+        return terms;
+    }
+    ~RandomHam() {
+        free(pauliCodes);
+        free(termCoeffs);
     }
 
  public:
-    PauliHamil ham;
+    pauliOpType* pauliCodes;
+    qreal* termCoeffs;
+    int terms;
 };
 namespace py = pybind11;
 #ifdef ENABLE_GPU
 #    define quest_test quest_test_gpu
 #endif
+using namespace pybind11::literals;
 PYBIND11_MODULE(quest_test, m) {
     py::class_<BasicTestEnv, std::shared_ptr<BasicTestEnv>>(m, "basic_test_env")
         .def(py::init<int>())
@@ -157,9 +163,13 @@ PYBIND11_MODULE(quest_test, m) {
         .def("reportStateToScreen", &BasicTestEnv::ReportStateToScreen);
     py::class_<RandomCircuit, BasicTestEnv, std::shared_ptr<RandomCircuit>>(m, "random_circuit_test")
         .def(py::init<int>())
-        .def("run", &RandomCircuit::run)
+        .def("apply_gate", py::overload_cast<std::string, int>(&RandomCircuit::apply_gate))
+        .def("apply_gate", py::overload_cast<std::string, int, int>(&RandomCircuit::apply_gate))
+        .def("apply_gate", py::overload_cast<std::string, int, int, double>(&RandomCircuit::apply_gate))
+        .def("apply_gate", py::overload_cast<std::string, int, double>(&RandomCircuit::apply_gate))
         .def("get_np", &RandomCircuit::get_np);
     py::class_<RandomHam, BasicTestEnv, std::shared_ptr<RandomHam>>(m, "random_ham_test")
-        .def(py::init<int>())
-        .def("run", &RandomHam::run);
+        .def(py::init<int, std::vector<std::vector<std::pair<std::string, int>>>>())
+        .def("run", &RandomHam::run)
+        .def("get_nterms", &RandomHam::get_nterms);
 }

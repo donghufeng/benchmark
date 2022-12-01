@@ -13,34 +13,26 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark random quantum circuit evolution with paddle quantum."""
+from benchmark.task_preparation import generate_random_circuit
 
 
-def paddle_random_circuit(n_qubits: int, params):
+def paddle_random_circuit(n_qubits: int):
     import paddle_quantum as pdq
 
+    circ_text = generate_random_circuit(n_qubits)
     circ = pdq.ansatz.Circuit(n_qubits)
-    for i in range(n_qubits - 3):
-        circ.h([i, i + 1, i + 2, i + 3])
-        circ.rx(i, param=params[i * 11])
-        circ.rx(i + 1, param=params[i * 11 + 1])
-        circ.rx(i + 2, param=params[i * 11 + 2])
-        circ.rx(i + 3, param=params[i * 11 + 3])
-        circ.crx([i, i + 1])
-        circ.crx([i + 1, i + 2])
-        circ.crx([i + 2, i + 3])
-        circ.crx([i + 3, i])
-        circ.rxx([i, i + 1], param=params[i * 11 + 4])
-        circ.ryy([i + 1, i + 2], param=params[i * 11 + 5])
-        circ.rzz([i + 2, i + 3], param=params[i * 11 + 6])
-        circ.s(i)
-        circ.s(i + 1)
-        circ.t(i + 3)
-        circ.t(i + 2)
-        circ.cp([i, i + 1], param=params[i * 11 + 7])
-        circ.cp([i, i + 1], param=params[i * 11 + 8])
-        circ.swap([i, i + 3])
-        circ.cp([i + 1, i], param=params[i * 11 + 9])
-        circ.cp([i + 2, i + 3], param=params[i * 11 + 10])
+    for gate_args in circ_text:
+        gate = gate_args[0]
+        if gate in ["x", "y", "z", "h", "s", "t"]:
+            getattr(circ, gate)(gate_args[1])
+        elif gate in ["cx", "cy", "cz"]:
+            getattr(circ, gate)([gate_args[1], gate_args[2]])
+        elif gate in ["rx", "ry", "rz"]:
+            getattr(circ, gate)(gate_args[1], gate_args[2])
+        elif gate in ["xx", "yy", "zz"]:
+            getattr(circ, "r" + gate)([gate_args[1], gate_args[2]])
+        else:
+            raise RuntimeError()
     return circ
 
 
@@ -54,8 +46,7 @@ def paddle_random_circuit_prepare(platform: str, n_qubits: int):
         paddle.device.set_device("gpu:0")
     else:
         raise ValueError(f"platform {platform} is not supported for paddle quantum.")
-    p0 = np.random.uniform(-1, 1, (n_qubits - 2) * 11)
-    circ = paddle_random_circuit(n_qubits, p0)
+    circ = paddle_random_circuit(n_qubits)
 
     def run():
         qs = circ.forward()
@@ -68,6 +59,5 @@ if __name__ == "__main__":
     import numpy as np
 
     n_qubits = 5
-    p0 = np.random.uniform(-1, 1, (n_qubits - 2) * 11)
-    circ = paddle_random_circuit(5, p0)
-    qs = circ.forward()
+    run = paddle_random_circuit_prepare("cpu", n_qubits)
+    run()
