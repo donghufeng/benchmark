@@ -38,10 +38,10 @@ tasks = TaskManage()
 # tasks.add_task("./paddlequantum/benchmark_random_ham.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(4, 16))
-tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
-    "p", ["cpu"]).add_arg("q", range(5, 20))
-tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
-    "p", ["gpu"]).add_arg("q", range(5, 23))
+# tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu"]).add_arg("q", range(5, 20))
+# tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["gpu"]).add_arg("q", range(5, 23))
 
 # tasks.add_task("./quest/benchmark_random_circuit.py").add_arg(
 #     "p", ["cpu", "gpu"]
@@ -79,5 +79,12 @@ tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
 # tasks.add_task("./tensorflowquantum/benchmark_4_regular_qaoa.py").add_arg(
 #     "p", ["cpu", "gpu"]
 # ).add_arg("q", range(5, 24))
+
+tasks.add_task("./qiskit/benchmark_random_circuit.py").add_arg(
+    "p", ["cpu", "gpu"]
+).add_arg("q", range(4, 24))
+tasks.add_task("./qiskit/benchmark_random_ham.py").add_arg(
+    "p", ["cpu", "gpu"]
+).add_arg("q", range(4, 24))
 
 tasks.generate_script()
