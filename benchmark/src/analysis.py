@@ -13,6 +13,7 @@
 # limitations under the License.
 # ============================================================================
 """Analysis data."""
+#%%
 import json
 from typing import Union, List
 
@@ -123,10 +124,24 @@ class DataFrame:
         return x, y
 
 
-if __name__ == "__main__":
+#%%
+if __name__ == '__main__':
     import numpy as np
+    import matplotlib.pyplot as plt
     data = DataFrame('./02.json')
     tasks = data.split_by_tasks()
     tasks[0].filter_task_params(
         'platform', 'cpu').split_by_params('framework')[0].extra_x_time(
             'n_qubit', np.mean)
+    #%%
+    random_circuit_evolution = tasks[0]
+    random_circuit_evolution_cpu, random_circuit_evolution_gpu = random_circuit_evolution.split_by_params(
+        'platform')
+    frameworks = random_circuit_evolution_cpu.split_by_params('framework')
+    for f in frameworks:
+        x, y = f.extra_x_time('n_qubit', np.mean)
+        plt.plot(x, y, '--', label=f.find_all_keys('framework')[0])
+        plt.plot(x, y, 'o')
+        plt.yscale('log')
+    plt.legend()
+    # %%
