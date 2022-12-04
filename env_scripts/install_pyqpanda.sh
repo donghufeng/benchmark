@@ -17,19 +17,15 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
-# ------------------------------------------------------------------------------
+$PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
 
-. "$BASEPATH/pip_url.sh"
+if [ $? -ne 0 ]; then
 
-$PYTHON -m pip install --upgrade pip -i ${TUNA_PIP}
+    echo "Install pyqpanda"
+    $PYTHON -m pip install pyqpanda
 
-. "$BASEPATH/install_mindquantum.sh"
-. "$BASEPATH/install_intel_qs.sh"
-. "$BASEPATH/install_paddlequantum.sh"
-. "$BASEPATH/install_qiskit.sh"
-. "$BASEPATH/install_tfq.sh"
-. "$BASEPATH/install_qulacs.sh"
-. "$BASEPATH/install_quest.sh"
-. "$BASEPATH/install_tensorcircuit.sh"
-. "$BASEPATH/install_pyqpanda.sh"
-. "$BASEPATH/install_other_requirements.sh"
+else
+
+    echo "${_BOLD}${_RED}pyqpanda already installed.${_NORMAL}"
+
+fi

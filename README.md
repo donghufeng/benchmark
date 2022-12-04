@@ -12,6 +12,7 @@
 |qulacs|Qulacs|0.5.2|✅|✅|✅|✅|❌|❌|✅|
 |quest|Oxford|3.5.0|✅|✅|✅|❌|❌|❌|✅|
 |tensorcircuit|Tencent|0.5.0|✅|✅|❌|✅|✅|❌|✅|
+|pyqpanda|本源|3.7.15|✅|✅|✅|✅|❌|✅|✅|
 
 ## Benchmark task
 
