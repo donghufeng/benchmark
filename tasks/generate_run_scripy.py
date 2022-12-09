@@ -62,15 +62,15 @@ tasks.add_task("./qulacs/benchmark_4_regular_qaoa.py").add_arg("p", ["cpu"]).add
     "q", range(5, 24)
 )
 
-tasks.add_task("./tensorcircuit/benchmark_random_circuit.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 17))
-tasks.add_task("./tensorcircuit/benchmark_random_ham.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(4, 17))
-tasks.add_task("./tensorcircuit/benchmark_4_regular_qaoa.py").add_arg(
-    "p", ["cpu", "gpu"]
-).add_arg("q", range(5, 17))
+# tasks.add_task("./tensorcircuit/benchmark_random_circuit.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(4, 17))
+# tasks.add_task("./tensorcircuit/benchmark_random_ham.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(4, 17))
+# tasks.add_task("./tensorcircuit/benchmark_4_regular_qaoa.py").add_arg(
+#     "p", ["cpu", "gpu"]
+# ).add_arg("q", range(5, 17))
 
 tasks.add_task("./tensorflowquantum/benchmark_random_circuit.py").add_arg(
     "p", ["cpu", "gpu"]
