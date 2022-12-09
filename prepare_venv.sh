@@ -45,7 +45,7 @@ fi
 
 cmake --version
 
-if [$? -ne 0 && "$_IS_GITHUB_CI" -eq 1 ]; then
+if [[ $? -ne 0 && "$_IS_GITHUB_CI" -eq 1 ]]; then
     $PYTHON -m pip install cmake
 fi
 
