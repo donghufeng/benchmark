@@ -13,29 +13,32 @@
 # limitations under the License.
 # ============================================================================
 """Generate tc random circuit."""
+import pyqpanda as pq
+
 from benchmark.task_preparation import generate_random_circuit
 
-import pyqpanda as pq
 
 def qpanda_random_circuit(qubits):
     circ_text = generate_random_circuit(len(qubits))
     prog = pq.QProg()
     for gate_args in circ_text:
         gate = gate_args[0]
-        if gate in ['x', 'y', 'z', 'h', 's', 't']:
+        if gate in ["x", "y", "z", "h", "s", "t"]:
             prog.insert(getattr(pq, gate.upper())(qubits[gate_args[1]]))
-        elif gate in ['cx', 'cy', 'cz']:
+        elif gate in ["cx", "cy", "cz"]:
             prog.insert(
                 getattr(pq, gate[1].upper())(qubits[gate_args[2]]).control(
-                    qubits[gate_args[1]]))
-        elif gate in ['rx', 'ry', 'rz']:
+                    qubits[gate_args[1]]
+                )
+            )
+        elif gate in ["rx", "ry", "rz"]:
+            prog.insert(getattr(pq, gate.upper())(qubits[gate_args[1]], gate_args[2]))
+        elif gate in ["xx", "yy", "zz"]:
             prog.insert(
-                getattr(pq, gate.upper())(qubits[gate_args[1]], gate_args[2]))
-        elif gate in ['xx', 'yy', 'zz']:
-            prog.insert(
-                getattr(pq, 'R' + gate.upper())(qubits[gate_args[1]],
-                                                qubits[gate_args[2]],
-                                                gate_args[3]))
+                getattr(pq, "R" + gate.upper())(
+                    qubits[gate_args[1]], qubits[gate_args[2]], gate_args[3]
+                )
+            )
         else:
             raise RuntimeError(f"Error: {gate}")
     return prog

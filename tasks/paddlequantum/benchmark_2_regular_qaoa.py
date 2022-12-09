@@ -37,7 +37,11 @@ def test_2_regular_qaoa(platform: str, n_qubits: int):
         args.file_name,
         args.file_dir,
         "2_regular_maxcut",
-        {"framework": "paddle_quantum", "platform": platform, "n_qubit": n_qubits,},
+        {
+            "framework": "paddle_quantum",
+            "platform": platform,
+            "n_qubit": n_qubits,
+        },
         run,
         warmup=True,
     )

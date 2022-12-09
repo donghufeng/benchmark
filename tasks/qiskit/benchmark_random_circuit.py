@@ -16,7 +16,9 @@
 import argparse
 
 from benchmark import Benchmark
-from benchmark.task_preparation.qiskit_random_circuit import qiskit_random_circuit_prepare
+from benchmark.task_preparation.qiskit_random_circuit import (
+    qiskit_random_circuit_prepare,
+)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", "--file-name", help="file name", type=str, default="0001")
@@ -37,7 +39,11 @@ def test_random_circuit(platform: str, n_qubits: int):
         args.file_name,
         args.file_dir,
         "random_circuit_evolution",
-        {"framework": "qiskit", "platform": platform, "n_qubit": n_qubits,},
+        {
+            "framework": "qiskit",
+            "platform": platform,
+            "n_qubit": n_qubits,
+        },
         run,
         warmup=True,
     )

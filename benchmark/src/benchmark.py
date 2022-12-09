@@ -18,6 +18,8 @@ import json
 import os
 import time
 
+import numpy as np
+
 MAX_ITER = 100
 MAX_TIME = 2
 
@@ -69,9 +71,10 @@ class Benchmark:
             if this_t - t[0] > MAX_TIME or n_step > MAX_ITER:
                 break
             n_step += 1
-        t = [j - t[0] for j in t[1:]]
-        self.data["time"] = t
-        self.data["mean"] = sum(t) / len(t)
+        t = np.array(t)
+        t = t[1:] - t[:-1]
+        self.data["time"] = list(t)
+        self.data["mean"] = np.mean(t)
         print(f"mean time: \033[4;31m{self.data['mean']}\033[00m")
 
     def save(self):

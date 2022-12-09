@@ -13,28 +13,29 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark random hamiltonian expectation on qiskit."""
-from benchmark.task_preparation import generate_random_ham
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import SparsePauliOp
 from qiskit_aer import AerSimulator
+
+from benchmark.task_preparation import generate_random_ham
 
 
 def trans_ham(n_qubits: int):
     ham_text = generate_random_ham(n_qubits)
     out = []
     for i in ham_text:
-        tmp = ['I'] * n_qubits
+        tmp = ["I"] * n_qubits
         for p, idx in i:
             tmp[idx] = p
-        out.append(''.join(tmp[::-1]))
+        out.append("".join(tmp[::-1]))
     return SparsePauliOp(out)
 
 
 def qiskit_random_ham_prepare(platform: str, n_qubits: int):
-    if platform == 'cpu':
-        Simulator = AerSimulator(method='statevector', device='CPU')
-    elif platform == 'gpu':
-        Simulator = AerSimulator(method='statevector', device='GPU')
+    if platform == "cpu":
+        Simulator = AerSimulator(method="statevector", device="CPU")
+    elif platform == "gpu":
+        Simulator = AerSimulator(method="statevector", device="GPU")
     else:
         raise RuntimeError("qiskit do not support platform " + platform)
     circ = QuantumCircuit(n_qubits)
@@ -45,11 +46,11 @@ def qiskit_random_ham_prepare(platform: str, n_qubits: int):
     circ.save_expectation_value(ham, list(range(n_qubits)))
 
     def run():
-        return Simulator.run(circ).result().data()['expectation_value']
+        return Simulator.run(circ).result().data()["expectation_value"]
 
     return run
 
 
-if __name__ == '__main__':
-    run = quest_random_ham_prepare('gpu', 5)
+if __name__ == "__main__":
+    run = quest_random_ham_prepare("gpu", 5)
     print(run())

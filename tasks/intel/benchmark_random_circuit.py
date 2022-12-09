@@ -32,7 +32,11 @@ def test_random_circuit(n_qubits: int):
         args.file_name,
         args.file_dir,
         "random_circuit_evolution",
-        {"framework": "intel", "platform": "cpu", "n_qubit": n_qubits,},
+        {
+            "framework": "intel",
+            "platform": "cpu",
+            "n_qubit": n_qubits,
+        },
         run,
         warmup=True,
     )

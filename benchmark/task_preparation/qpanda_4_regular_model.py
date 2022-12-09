@@ -34,7 +34,9 @@ def qpanda_qaoa_prepare(platform: str, n_qubit):
 
     net = nx.random_regular_graph(4, n_qubit, SEED)
     edges = list(net.edges)
-    p0 = pq.var(np.random.uniform(-1, 1, len(edges) + n_qubit).astype(np.float64)[:, None], True)
+    p0 = pq.var(
+        np.random.uniform(-1, 1, len(edges) + n_qubit).astype(np.float64)[:, None], True
+    )
 
     circ = pq.VariationalQuantumCircuit()
     for i in qubits:
@@ -53,15 +55,18 @@ def qpanda_qaoa_prepare(platform: str, n_qubit):
     loss = pq.qop(circ, hp, qvm, qubits)
     optimizer = pq.MomentumOptimizer.minimize(loss, 0.01, 0.8)
     leaves = optimizer.get_variables()
+
     def run():
         optimizer.run(leaves, 0)
         loss_value = optimizer.get_loss()
         return loss_value
+
     return run
 
 
 if __name__ == "__main__":
     import numpy as np
-    n_qubit=5
-    run = qpanda_qaoa_prepare('cpu', n_qubit)
+
+    n_qubit = 5
+    run = qpanda_qaoa_prepare("cpu", n_qubit)
     run()

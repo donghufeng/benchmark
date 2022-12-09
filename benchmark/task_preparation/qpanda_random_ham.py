@@ -13,8 +13,10 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark random hamiltonian expectation on qpanda."""
-from benchmark.task_preparation import generate_random_ham
 import pyqpanda as pq
+
+from benchmark.task_preparation import generate_random_ham
+
 
 def trans_ham(n_qubits: int):
     ham_text = generate_random_ham(n_qubits)
@@ -45,6 +47,6 @@ def qpanda_random_ham_prepare(platform: str, n_qubits: int):
     return run
 
 
-if __name__ == '__main__':
-    run = qpanda_random_ham_prepare('cpu', 5)
+if __name__ == "__main__":
+    run = qpanda_random_ham_prepare("cpu", 5)
     print(run())

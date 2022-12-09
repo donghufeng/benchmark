@@ -29,7 +29,14 @@ from benchmark.task_preparation import generate_random_circuit
 
 
 def cy():
-    return np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1j], [0, 0, -1j, 0],])
+    return np.array(
+        [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 0, 1j],
+            [0, 0, -1j, 0],
+        ]
+    )
 
 
 def qulacs_random_circ(n_qubits):

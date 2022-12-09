@@ -15,6 +15,7 @@
 """Benchmark random circuit evolution on qiskit."""
 from qiskit import QuantumCircuit
 from qiskit_aer import AerSimulator
+
 from benchmark.task_preparation import generate_random_circuit
 
 
@@ -23,24 +24,24 @@ def prepare_circuit(n_qubits: int):
     circ = QuantumCircuit(n_qubits)
     for gate_args in circ_text:
         gate = gate_args[0]
-        if gate in ['x', 'y', 'z', 'h', 's', 't']:
+        if gate in ["x", "y", "z", "h", "s", "t"]:
             getattr(circ, gate)(gate_args[1])
-        elif gate in ['cx', 'cy', 'cz']:
+        elif gate in ["cx", "cy", "cz"]:
             getattr(circ, gate)(gate_args[1], gate_args[2])
-        elif gate in ['rx', 'ry', 'rz']:
+        elif gate in ["rx", "ry", "rz"]:
             getattr(circ, gate)(gate_args[2], gate_args[1])
-        elif gate in ['xx', 'yy', 'zz']:
-            getattr(circ, 'r' + gate)(gate_args[3], gate_args[1], gate_args[2])
+        elif gate in ["xx", "yy", "zz"]:
+            getattr(circ, "r" + gate)(gate_args[3], gate_args[1], gate_args[2])
         else:
             raise RuntimeError(f"{gate}")
     return circ
 
 
 def qiskit_random_circuit_prepare(platform: str, n_qubits: int):
-    if platform == 'cpu':
-        Simulator = AerSimulator(method='statevector', device='CPU')
-    elif platform == 'gpu':
-        Simulator = AerSimulator(method='statevector', device='GPU')
+    if platform == "cpu":
+        Simulator = AerSimulator(method="statevector", device="CPU")
+    elif platform == "gpu":
+        Simulator = AerSimulator(method="statevector", device="GPU")
     else:
         raise RuntimeError("qiskit do not support platform " + platform)
     circ = prepare_circuit(n_qubits)
@@ -52,6 +53,6 @@ def qiskit_random_circuit_prepare(platform: str, n_qubits: int):
     return run
 
 
-if __name__ == '__main__':
-    run = qiskit_random_circuit_prepare('gpu', 5)
+if __name__ == "__main__":
+    run = qiskit_random_circuit_prepare("gpu", 5)
     run()

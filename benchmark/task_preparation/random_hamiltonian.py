@@ -15,6 +15,7 @@
 """Generate random hamiltonian."""
 
 import numpy as np
+from openfermion import QubitOperator
 
 from benchmark import SEED
 
@@ -37,7 +38,7 @@ def generate_random_ham(n_qubits: int):
     n_terms = 48 * (4 - n_qubits) + 1000
     np.random.seed(SEED)
     qubit_idx = list(range(n_qubits))
-    out = []
+    out = QubitOperator()
     for _ in range(n_terms):
         np.random.shuffle(qubit_idx)
         n_pauli = np.random.randint(n_qubits) + 1
@@ -46,8 +47,11 @@ def generate_random_ham(n_qubits: int):
             term.append(
                 [PAULI_LIST[np.random.choice(len(PAULI_LIST), 1)[0]], qubit_idx[i]]
             )
-        out.append(term)
-    return out
+        out += QubitOperator(" ".join([f"{i}{j}" for i, j in term]))
+    res = []
+    for term in out.terms:
+        res.append([[j, i] for i, j in term])
+    return res
 
 
 if __name__ == "__main__":

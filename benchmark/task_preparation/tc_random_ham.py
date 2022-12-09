@@ -46,10 +46,12 @@ def tc_random_ham_prepare(backend: str, platform: str, n_qubits: int):
         ham.append([])
         for p, i in term:
             ham[-1].append((getattr(tc.gates, p.lower())(), [i]))
-
+    # expectation = tc.backend.jit(circ.expectation)  # too long
+    # expectation()  # warm up
     def run():
         e0 = 0
         for term in ham:
+            # e0 += expectation(*term)
             e0 += circ.expectation(*term)
         return e0
 

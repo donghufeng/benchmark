@@ -60,10 +60,12 @@ def tc_random_circuit_prepare(backend: str, platform: str, n_qubits: int):
     if backend != "tensorflow":
         raise RuntimeError("We only benchmark for tensorflow backend.")
     c_fun = tc_random_circuit(n_qubits)
-    # wave_fun = tc.backend.jit(c_fun.wavefunction)  # too long
+    wave_fun = tc.backend.jit(c_fun.wavefunction)  # too long
+    wave_fun()  # warm up
 
     def run():
-        return c_fun.wavefunction()
+        # return c_fun.wavefunction()
+        return wave_fun()
 
     return run
 

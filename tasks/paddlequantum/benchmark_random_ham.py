@@ -35,7 +35,11 @@ def test_random_ham(platform: str, n_qubits: int):
         args.file_name,
         args.file_dir,
         "random_ham_expectation",
-        {"framework": "paddle_quantum", "platform": platform, "n_qubit": n_qubits,},
+        {
+            "framework": "paddle_quantum",
+            "platform": platform,
+            "n_qubit": n_qubits,
+        },
         run,
         warmup=True,
     )

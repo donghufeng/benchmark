@@ -13,9 +13,9 @@
 # limitations under the License.
 # ============================================================================
 """Benchmark module."""
+from .analysis import DataFrame
 from .benchmark import Benchmark, BenchmarkProcess
 from .generate_run_file import Task, TaskManage
-from .analysis import DataFrame
 
 __all__ = ["Benchmark", "BenchmarkProcess", "TaskManage", "Task", "DataFrame"]
 __all__.sort()

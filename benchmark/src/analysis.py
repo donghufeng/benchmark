@@ -15,11 +15,11 @@
 """Analysis data."""
 #%%
 import json
-from typing import Union, List
+from typing import List, Union
 
 
 def load_from_json(filename: str):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         data = json.load(f)
     return data
 
@@ -38,8 +38,8 @@ def find_all_task(data: dict):
 def find_all_keys(data: dict, params: str):
     out = []
     for v in data.values():
-        if params in v.get('task_params'):
-            value = v.get('task_params').get(params)
+        if params in v.get("task_params"):
+            value = v.get("task_params").get(params)
             if value not in out:
                 out.append(value)
     return out
@@ -48,7 +48,7 @@ def find_all_keys(data: dict, params: str):
 def filter_task(data: dict, task: str):
     out = {}
     for k, v in data.items():
-        if v.get('task_name') == task:
+        if v.get("task_name") == task:
             out[k] = v
     return out
 
@@ -57,14 +57,15 @@ def filter_task_params(data: dict, task_param_name: str, task_param_val):
     """Find all data that match task_params key and value with given value."""
     out = {}
     for k, v in data.items():
-        if task_param_name in v.get('task_params') and v.get(
-                'task_params').get(task_param_name) == task_param_val:
+        if (
+            task_param_name in v.get("task_params")
+            and v.get("task_params").get(task_param_name) == task_param_val
+        ):
             out[k] = v
     return out
 
 
 class DataFrame:
-
     def __init__(self, data: Union[dict, str]):
         if isinstance(data, str):
             self.data = load_from_json(data)
@@ -82,7 +83,7 @@ class DataFrame:
     def find_all_params(self):
         out = []
         for v in self.data.values():
-            for i in v.get('task_params'):
+            for i in v.get("task_params"):
                 if i not in out:
                     out.append(i)
         return out
@@ -93,10 +94,8 @@ class DataFrame:
     def filter_task(self, task_name: str):
         return DataFrame(filter_task(self.data, task_name))
 
-    def filter_task_params(self, task_param_name: str,
-                           task_param_val) -> "DataFrame":
-        return DataFrame(
-            filter_task_params(self.data, task_param_name, task_param_val))
+    def filter_task_params(self, task_param_name: str, task_param_val) -> "DataFrame":
+        return DataFrame(filter_task_params(self.data, task_param_name, task_param_val))
 
     def split_by_params(self, task_param_name: str) -> List["DataFrame"]:
         return [
@@ -110,8 +109,7 @@ class DataFrame:
 
     def assert_single_params(self, task_parm_name):
         if len(self.find_all_keys(task_parm_name)) != 1:
-            raise ValueError(
-                f"{task_parm_name} of DataFrame has multiple values.")
+            raise ValueError(f"{task_parm_name} of DataFrame has multiple values.")
 
     def extra_x_time(self, task_param_name: str, method=None):
         if method is None:
@@ -125,23 +123,26 @@ class DataFrame:
 
 
 #%%
-if __name__ == '__main__':
-    import numpy as np
+if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    data = DataFrame('./02.json')
+    import numpy as np
+
+    data = DataFrame("./02.json")
     tasks = data.split_by_tasks()
-    tasks[0].filter_task_params(
-        'platform', 'cpu').split_by_params('framework')[0].extra_x_time(
-            'n_qubit', np.mean)
+    tasks[0].filter_task_params("platform", "cpu").split_by_params("framework")[
+        0
+    ].extra_x_time("n_qubit", np.mean)
     #%%
     random_circuit_evolution = tasks[0]
-    random_circuit_evolution_cpu, random_circuit_evolution_gpu = random_circuit_evolution.split_by_params(
-        'platform')
-    frameworks = random_circuit_evolution_cpu.split_by_params('framework')
+    (
+        random_circuit_evolution_cpu,
+        random_circuit_evolution_gpu,
+    ) = random_circuit_evolution.split_by_params("platform")
+    frameworks = random_circuit_evolution_cpu.split_by_params("framework")
     for f in frameworks:
-        x, y = f.extra_x_time('n_qubit', np.mean)
-        plt.plot(x, y, '--', label=f.find_all_keys('framework')[0])
-        plt.plot(x, y, 'o')
-        plt.yscale('log')
+        x, y = f.extra_x_time("n_qubit", np.mean)
+        plt.plot(x, y, "--", label=f.find_all_keys("framework")[0])
+        plt.plot(x, y, "o")
+        plt.yscale("log")
     plt.legend()
     # %%
