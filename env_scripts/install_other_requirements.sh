@@ -17,13 +17,20 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
-PACKAGENAME="openfermionpyscf"
-$PYTHON -c "from importlib.metadata import version; version('${PACKAGENAME}')"
-if [ $? -ne 0 ]; then
+benchmark_info "Install other packages"
 
-    echo "Installing ${PACKAGENAME}"
+function pip_install() {
+    PACKAGENAME="$1"
+    $PYTHON -c "from importlib.metadata import version; version('${PACKAGENAME}')" 2> /dev/null
+    if [ $? -ne 0 ]; then
 
-    $PYTHON -m pip install ${PACKAGENAME} -i ${HUAWEI_PIP}
-else
-    echo "${_BOLD}${_RED}${PACKAGENAME} already installed.${_NORMAL}"
-fi
+        benchmark_info "Installing ${PACKAGENAME}"
+
+        $PYTHON -m pip install ${PACKAGENAME} -i ${HUAWEI_PIP}
+    else
+        pkg_installed_info ${PACKAGENAME}
+    fi
+}
+
+pip_install "openfermionpyscf"
+pip_install "toml"

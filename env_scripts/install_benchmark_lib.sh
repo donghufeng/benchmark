@@ -20,42 +20,61 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 # ------------------------------------------------------------------------------
 
 . "$BASEPATH/pip_url.sh"
+. "$BASEPATH/parse_framework.sh"
 
 $PYTHON -m pip install --upgrade pip -i ${TUNA_PIP}
 
-if [ "${BENCHMARK_MINDQUANTUM}:-1" == "1" ]; then
+has_framework "mindquantum" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install MINDQUANTUM"
     . "$BASEPATH/install_mindquantum.sh"
 fi
 
-if [ "${BENCHMARK_INTEL}:-1" == "1" ]; then
+has_framework "intel" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install INTEL"
     . "$BASEPATH/install_intel_qs.sh"
 fi
 
-if [ "${BENCHMARK_PADDLEQUANTUM}:-1" == "1" ]; then
+has_framework "paddlequantum" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install PADDLEQUANTUM"
     . "$BASEPATH/install_paddlequantum.sh"
 fi
 
-if [ "${BENCHMARK_QISKIT}:-1" == "1" ]; then
+has_framework "qiskit" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install QISKIT"
     . "$BASEPATH/install_qiskit.sh"
 fi
 
-if [ "${BENCHMARK_TFQ}:-1" == "1" ]; then
+has_framework "tfq" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install TFQ"
     . "$BASEPATH/install_tfq.sh"
 fi
 
-if [ "${BENCHMARK_QULACS}:-1" == "1" ]; then
+has_framework "qulacs" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install QULACS"
     . "$BASEPATH/install_qulacs.sh"
 fi
 
-if [ "${BENCHMARK_QUEST}:-1" == "1" ]; then
+has_framework "quest" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install QUEST"
     . "$BASEPATH/install_quest.sh"
 fi
 
-if [ "${BENCHMARK_TENSORCIRCUIT}:-1" == "1" ]; then
+has_framework "tensorcircuit" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install TENSORCIRCUIT"
     . "$BASEPATH/install_tensorcircuit.sh"
 fi
 
-if [ "${BENCHMARK_PYQPANDA}:-1" == "1" ]; then
+has_framework "pyqpanda" $1
+if [ $find_it -eq 1 ]; then
+    benchmark_info "Install PYQPANDA"
     . "$BASEPATH/install_pyqpanda.sh"
 fi
 

@@ -25,7 +25,7 @@ export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
 $PYTHON -c "import intelqs_py" 2> /dev/null
 
 if [ $? -ne 0 ]; then
-    echo " -- Install intel-qs"
+    benchmark_info "Install intel-qs"
 
     URL="https://gitee.com/mirrors_intel/Intel-QS.git"
     if [ ! -d $third_party ]; then
@@ -39,7 +39,7 @@ if [ $? -ne 0 ]; then
     fi
 
     cd $PACKAGEPATH
-    echo "Building ${PACKAGENAME}"
+    benchmark_info "Building ${PACKAGENAME}"
 
     if [ ! -d "build" ]; then
         mkdir build
@@ -50,21 +50,24 @@ if [ $? -ne 0 ]; then
 
     PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
     if [ $? -ne 0 ]; then
-        echo "Cannot import pybind11, install it."
+        benchmark_info "Cannot import pybind11, install it."
         $PYTHON -m pip install pybind11==2.10.0
         PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
     else
-        echo "found pybind11 succeed"
+        pkg_installed_info "pybind11"
     fi
 
-    echo "pybind_DIR is ${PYBIND_DIR}"
+    benchmark_info "pybind_DIR is ${PYBIND_DIR}"
 
     cd build
     cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF -Dpybind11_DIR=$PYBIND_DIR ..
     make -j10
     cp lib/*.so ${python_venv_path}/bin
     cd $ROOTDIR
-
+    $PYTHON -c "import intelqs_py" 2> /dev/null
+    if [ $? -ne 0 ]; then
+        die "Install intel_qs failed."
+    fi
 else
-    echo "${_BOLD}${_RED}intel-qs already installed.${_NORMAL}"
+    pkg_installed_info "intel-qs"
 fi

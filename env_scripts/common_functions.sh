@@ -50,6 +50,14 @@ function die() {
     echo "${_BOLD}${_RED}$*${_NORMAL}" >&2; exit 2;
 }
 
+function benchmark_info() {
+    echo "${_BOLD}${_GREEN}--> $*${_NORMAL}" >&2
+}
+
+function pkg_installed_info() {
+    echo "${_BOLD}${_CYAN}--> ✅ $* already installed.${_NORMAL}" >&2
+}
+
 call_cmd() {
     if [ "${dry_run:-0}" -ne 1 ]; then
         debug_print "Calling command: $*"

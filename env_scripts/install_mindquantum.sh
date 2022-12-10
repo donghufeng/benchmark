@@ -24,7 +24,7 @@ if [ $? -ne 0 ]; then
     call_cmd $PYTHON -m pip install mindquantum
 
 else
-    echo "${_BOLD}${_RED}mindquantum already installed.${_NORMAL}"
+    pkg_installed_info "mindquantum"
 fi
 
 $PYTHON -c "import rich"
@@ -35,4 +35,6 @@ fi
 $PYTHON -c "from importlib.metadata import version; version('mindspore')"
 if [ $? -ne 0 ]; then
     $PYTHON -m pip install mindspore==1.8.0 -i ${BAIDU_PIP}
+else
+    pkg_installed_info "mindspore"
 fi
