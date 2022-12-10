@@ -19,6 +19,12 @@ ROOTDIR="$BASEPATH"
 python_venv_path="${ROOTDIR}/venv"
 third_party="${ROOTDIR}/third_party"
 
+_IS_GITHUB_CI=0
+if [[ "${GITHUB_CI:-0}" == "1" ]]; then
+    echo " -- GITHUB CI Deceted."
+    _IS_GITHUB_CI=1
+fi
+
 # ------------------------------------------------------------------------------
 
 # Locate python or python3
@@ -36,8 +42,16 @@ $PYTHON -c "import IPython"
 if [ $? -ne 0 ]; then
     $PYTHON -m pip install ipython
 fi
+
+cmake --version
+
+if [[ $? -ne 0 && "$_IS_GITHUB_CI" -eq 1 ]]; then
+    $PYTHON -m pip install cmake
+fi
+
 alias ipython=$python_venv_path/bin/ipython
 
 export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH
+export PYTHON_INCLUDE_DIR=$(python3 -c 'from distutils.sysconfig import get_python_inc;print(get_python_inc())'):PYTHON_INCLUDE_DIR
 
 . "$ROOTDIR/env_scripts/install_benchmark_lib.sh"

@@ -25,7 +25,7 @@ if [ $? -ne 0 ]; then
     $PYTHON -m pip install paddle-quantum
 
     echo "Install paddle"
-    $PYTHON -m pip install paddlepaddle-gpu==2.4.0rc0 -i ${BAIDU_PIP}
+    $PYTHON -m pip install paddlepaddle-gpu==2.4.0rc0 -i https://mirror.baidu.com/pypi/simple
 
     $PYTHON -m pip install openfermion --upgrade
 

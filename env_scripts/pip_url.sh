@@ -17,11 +17,20 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
-
-HUAWEI_PIP="https://repo.huaweicloud.com/repository/pypi/simple"
-USTS_PIP="https://pypi.mirrors.ustc.edu.cn/simple/"
-ALI_PIP="http://mirrors.aliyun.com/pypi/simple/"
-BAIDU_PIP="https://mirror.baidu.com/pypi/simple"
-TUNA_PIP="https://pypi.tuna.tsinghua.edu.cn/simple"
+if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+    echo "Set all pip source to pypi"
+    HUAWEI_PIP="https://pypi.org/simple"
+    USTS_PIP="https://pypi.org/simple"
+    ALI_PIP="https://pypi.org/simple"
+    BAIDU_PIP="https://pypi.org/simple"
+    TUNA_PIP="https://pypi.org/simple"
+else
+    echo "Set correct pip source"
+    HUAWEI_PIP="https://repo.huaweicloud.com/repository/pypi/simple"
+    USTS_PIP="https://pypi.mirrors.ustc.edu.cn/simple/"
+    ALI_PIP="http://mirrors.aliyun.com/pypi/simple/"
+    BAIDU_PIP="https://mirror.baidu.com/pypi/simple"
+    TUNA_PIP="https://pypi.tuna.tsinghua.edu.cn/simple"
+fi
 
 BEST_PIP=${BAIDU_PIP}
