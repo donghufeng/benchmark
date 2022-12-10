@@ -37,19 +37,11 @@ fi
 
 . "$ROOTDIR/env_scripts/pip_url.sh"
 
-$PYTHON -c "import IPython"
-
-if [ $? -ne 0 ]; then
-    $PYTHON -m pip install ipython
+if [[ "$_IS_GITHUB_CI" -ne 1 ]]; then
+    echo "Preparing IPython"
+    $PYTHON -c "import IPython" || $PYTHON -m pip install ipython
+    alias ipython=$python_venv_path/bin/ipython
 fi
-
-cmake --version
-
-if [[ $? -ne 0 && "$_IS_GITHUB_CI" -eq 1 ]]; then
-    $PYTHON -m pip install cmake
-fi
-
-alias ipython=$python_venv_path/bin/ipython
 
 export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH
 export PYTHON_INCLUDE_DIR=$(python3 -c 'from distutils.sysconfig import get_python_inc;print(get_python_inc())'):PYTHON_INCLUDE_DIR
