@@ -22,9 +22,10 @@ PACKAGEPATH="${third_party}/${PACKAGENAME}"
 
 export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
 
-$PYTHON -c "import intelqs_py" 2> dev/null
+$PYTHON -c "import intelqs_py" 2> /dev/null
 
 if [ $? -ne 0 ]; then
+    echo " -- Install intel-qs"
 
     URL="https://gitee.com/mirrors_intel/Intel-QS.git"
     if [ ! -d $third_party ]; then
@@ -47,11 +48,17 @@ if [ $? -ne 0 ]; then
         mkdir build
     fi
 
-    $PYTHON -c "import pybind11"
+    PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
     if [ $? -ne 0 ]; then
+        echo "Cannot import pybind11, install it."
         $PYTHON -m pip install pybind11==2.10.0
+        PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+    else
+        echo "found pybind11 succeed"
     fi
-    PYBIND_DIR=$($PYTHON -m pybind11 --cmakedir)
+
+    echo "pybind_DIR is ${PYBIND_DIR}"
+
     cd build
     cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF -Dpybind11_DIR=$PYBIND_DIR ..
     make -j10

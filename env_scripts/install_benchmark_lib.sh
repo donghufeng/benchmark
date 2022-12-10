@@ -23,13 +23,40 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 
 $PYTHON -m pip install --upgrade pip -i ${TUNA_PIP}
 
-# . "$BASEPATH/install_mindquantum.sh"
-. "$BASEPATH/install_intel_qs.sh"
-. "$BASEPATH/install_paddlequantum.sh"
-. "$BASEPATH/install_qiskit.sh"
-. "$BASEPATH/install_tfq.sh"
-. "$BASEPATH/install_qulacs.sh"
-. "$BASEPATH/install_quest.sh"
-. "$BASEPATH/install_tensorcircuit.sh"
-. "$BASEPATH/install_pyqpanda.sh"
+if [ "${BENCHMARK_MINDQUANTUM}:-1" == "1" ]; then
+    . "$BASEPATH/install_mindquantum.sh"
+fi
+
+if [ "${BENCHMARK_INTEL}:-1" == "1"]; then
+    . "$BASEPATH/install_intel_qs.sh"
+fi
+
+if [ "${BENCHMARK_PADDLEQUANTUM}:-1" == "1" ]; then
+    . "$BASEPATH/install_paddlequantum.sh"
+fi
+
+if [ "${BENCHMARK_QISKIT}:-1" == "1" ]; then
+    . "$BASEPATH/install_qiskit.sh"
+fi
+
+if [ "${BENCHMARK_TFQ}:-1" == "1" ]; then
+    . "$BASEPATH/install_tfq.sh"
+fi
+
+if [ "${BENCHMARK_QULACS}:-1" == "1" ]; then
+    . "$BASEPATH/install_qulacs.sh"
+fi
+
+if [ "${BENCHMARK_QUEST}:-1" == "1" ]; then
+    . "$BASEPATH/install_quest.sh"
+fi
+
+if [ "${BENCHMARK_TENSORCIRCUIT}:-1" == "1" ]; then
+    . "$BASEPATH/install_tensorcircuit.sh"
+fi
+
+if [ "${BENCHMARK_PYQPANDA}:-1" == "1" ]; then
+    . "$BASEPATH/install_pyqpanda.sh"
+fi
+
 . "$BASEPATH/install_other_requirements.sh"
