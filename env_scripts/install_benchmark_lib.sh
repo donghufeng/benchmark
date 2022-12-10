@@ -27,7 +27,7 @@ if [ "${BENCHMARK_MINDQUANTUM}:-1" == "1" ]; then
     . "$BASEPATH/install_mindquantum.sh"
 fi
 
-if [ "${BENCHMARK_INTEL}:-1" == "1"]; then
+if [ "${BENCHMARK_INTEL}:-1" == "1" ]; then
     . "$BASEPATH/install_intel_qs.sh"
 fi
 
