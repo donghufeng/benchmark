@@ -22,7 +22,7 @@ PACKAGEPATH="${third_party}/${PACKAGENAME}"
 
 export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
 
-$PYTHON -c "import intelqs_py"
+$PYTHON -c "import intelqs_py" 2> dev/null
 
 if [ $? -ne 0 ]; then
 
