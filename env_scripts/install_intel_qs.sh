@@ -62,11 +62,13 @@ if [ $? -ne 0 ]; then
     cd build
     cmake -DIqsMPI=OFF -DIqsUtest=OFF -DIqsPython=ON -DIqsNoise=OFF -DBuildExamples=OFF -Dpybind11_DIR=$PYBIND_DIR ..
     make -j10
-    cp lib/*.so ${python_venv_path}/bin
+    cp lib/*.so ${SITE_PACKAGES}
     cd $ROOTDIR
-    $PYTHON -c "import intelqs_py" 2> /dev/null
+    $PYTHON -c "import intelqs_py;print(intelqs_py.__file__)"
     if [ $? -ne 0 ]; then
         die "Install intel_qs failed."
+    else
+        pkg_installed_info "intel-qs"
     fi
 else
     pkg_installed_info "intel-qs"

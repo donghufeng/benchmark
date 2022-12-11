@@ -44,6 +44,9 @@ if [[ "$_IS_GITHUB_CI" -ne 1 ]]; then
 fi
 
 export PYTHONPATH=$ROOTDIR/benchmark:$PYTHONPATH
-export PYTHON_INCLUDE_DIR=$(python3 -c 'from distutils.sysconfig import get_python_inc;print(get_python_inc())'):PYTHON_INCLUDE_DIR
+export PYTHON_INCLUDE_DIR=$(python3 -c 'from distutils.sysconfig import get_python_inc;print(get_python_inc())'):$PYTHON_INCLUDE_DIR
+SITE_PACKAGES=$(python3 -c 'import sysconfig;print(sysconfig.get_paths()["purelib"])')
+benchmark_info "PYTHON_INCLUDE_DIR: $PYTHON_INCLUDE_DIR"
+benchmark_info "SITE_PACKAGES: $SITE_PACKAGES"
 
 . "$ROOTDIR/env_scripts/install_benchmark_lib.sh"

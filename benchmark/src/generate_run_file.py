@@ -14,6 +14,7 @@
 # ============================================================================
 """Generate run script."""
 import itertools
+from typing import List
 
 meta = """
 #!/bin/bash
@@ -61,7 +62,6 @@ echo "Benchmark file is ${file_name}.json"
 #     'q': range(4, 8)
 # }
 
-
 # def gene_cmd(task):
 #     filename = task['filename']
 #     args = {k: v for k, v in task.items() if k != 'filename'}
@@ -73,7 +73,6 @@ echo "Benchmark file is ${file_name}.json"
 #         out.append(f"python {filename} {tmp} -n $file_name")
 #     return out
 
-
 # with open('run_benchmark.sh', 'w') as f:
 #     f.writelines(meta)
 #     f.writelines('\n'.join(gene_cmd(task1)) + '\n')
@@ -82,7 +81,8 @@ echo "Benchmark file is ${file_name}.json"
 
 
 class Task:
-    def __init__(self, task_file):
+
+    def __init__(self, task_file: str):
         self.task_file = task_file
         self.args = {}
 
@@ -90,19 +90,22 @@ class Task:
         self.args[arg_name] = arg_values
         return self
 
-    def generate_cmd(self, run="python"):
+    def generate_cmd(self, cmd="python3"):
         all_args = list(itertools.product(*self.args.values()))
         out = []
         for arg in all_args:
-            tmp = " ".join(
-                [f"-{i} {j}" for i, j in dict(zip(self.args.keys(), arg)).items()]
-            )
-            out.append(f"{run} {self.task_file} {tmp} -n $file_name")
+            tmp = " ".join([
+                f"-{i} {j}"
+                for i, j in dict(zip(self.args.keys(), arg)).items()
+            ])
+            out.append(f"{cmd} {self.task_file} {tmp} -n $file_name")
         return out
 
 
 class TaskManage:
+
     def __init__(self):
+        self.tasks: List[Task]
         self.tasks = []
 
     def add_task(self, task_file) -> Task:
@@ -110,11 +113,11 @@ class TaskManage:
         self.tasks.append(task)
         return task
 
-    def generate_script(self, scripe_name="run_benchmark.sh"):
+    def generate_script(self, scripe_name="run_benchmark.sh", cmd='python3'):
         with open(scripe_name, "w") as f:
             f.writelines(meta)
             for task in self.tasks:
-                f.writelines("\n" + "\n".join(task.generate_cmd()) + "\n")
+                f.writelines("\n" + "\n".join(task.generate_cmd(cmd)) + "\n")
 
 
 if __name__ == "__main__":
@@ -122,13 +125,13 @@ if __name__ == "__main__":
     n_qubits = range(4, 22)
     tasks = TaskManage()
     tasks.add_task("test_apply_hamiltonian.py").add_arg("q", n_qubits).add_arg(
-        "s", simulators
-    )
+        "s", simulators)
 
-    tasks.add_task("test_qnn.py").add_arg("q", n_qubits).add_arg("s", simulators)
+    tasks.add_task("test_qnn.py").add_arg("q",
+                                          n_qubits).add_arg("s", simulators)
 
-    tasks.add_task("test_benchmark_random_circuit.py").add_arg("q", n_qubits).add_arg(
-        "s", simulators
-    )
-    tasks.add_task("test_qaoa.py").add_arg("q", n_qubits).add_arg("s", simulators)
+    tasks.add_task("test_benchmark_random_circuit.py").add_arg(
+        "q", n_qubits).add_arg("s", simulators)
+    tasks.add_task("test_qaoa.py").add_arg("q",
+                                           n_qubits).add_arg("s", simulators)
     tasks.generate_script()
