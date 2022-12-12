@@ -24,5 +24,5 @@ if [ $? -ne 0 ]; then
 
     $PYTHON -m pip install tensorcircuit==0.5.0 -i ${HUAWEI_PIP}
 else
-     pkg_install_info "tensorcircuit"
+     pkg_installed_info "tensorcircuit"
 fi
