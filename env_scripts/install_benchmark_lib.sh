@@ -48,9 +48,9 @@ if [ $find_it -eq 1 ]; then
     . "$BASEPATH/install_qiskit.sh"
 fi
 
-has_framework "tfq" $1
+has_framework "tensorflowquantum" $1
 if [ $find_it -eq 1 ]; then
-    benchmark_info "Install TFQ"
+    benchmark_info "Install TensorFlow Quantum"
     . "$BASEPATH/install_tfq.sh"
 fi
 
