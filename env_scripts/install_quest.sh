@@ -37,15 +37,25 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
     if [ -d build ]; then
         rm -rf build
     fi
+
+    PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+    if [ $? -ne 0 ]; then
+        benchmark_info "Cannot import pybind11, install it."
+        $PYTHON -m pip install pybind11==2.10.0
+        PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+    else
+        pkg_installed_info "pybind11"
+    fi
+    cp $PYBIND_DIR/
     mkdir build
     cd build
-    cmake ..
+    cmake -Dpybind11_DIR=${PYBIND_DIR} ..
     make -j10
     cp QuEST/libQuEST.so $python_venv_path/lib
     export LD_LIBRARY_PATH=${python_venv_path}/lib:${LD_LIBRARY_PATH}
     cd $ROOTDIR
 
-    if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+    if [ "$_IS_GITHUB_CI" -ne 1 ]; then
         cd $third_party
         cd $PACKAGEPATH
         if [ -d build ]; then
@@ -53,7 +63,7 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
         fi
         mkdir build
         cd build
-        cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
+        cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60 -Dpybind11_DIR=${PYBIND_DIR}
         make -j10
         cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST_GPU.so
 
@@ -69,7 +79,7 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
         fi
         mkdir build
         cd build
-        cmake ..
+        cmake -Dpybind11_DIR=${PYBIND_DIR} ..
         make -j8
         cd $ROOTDIR
         ls $ROOTDIR/benchmark/*.so
