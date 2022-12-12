@@ -1,6 +1,6 @@
 [benchmark-framework]
 frameworks = [
-    'qpanda',
+    'tensorcircuit',
 ]
 
 
@@ -99,3 +99,17 @@ frameworks = [
         platform = ['cpu']
         qubit_min = 4
         qubit_max = 5
+
+[framework.tensorcircuit]
+    [framework.tensorcircuit.benchmark_random_circuit]
+        platform = ['cpu']
+        qubit_min = 4
+        qubit_max = 5
+    [framework.tensorcircuit.benchmark_random_ham]
+        platform = ['cpu']
+        qubit_min = 4
+        qubit_max = 5
+    [framework.tensorcircuit.benchmark_4_regular_qaoa]
+        platform = ['cpu']
+        qubit_min = 5
+        qubit_max = 6

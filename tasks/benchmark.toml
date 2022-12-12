@@ -7,7 +7,8 @@ frameworks = [
     'tensorflowquantum',
     'qulacs',
     'quest',
-    'qpanda'
+    'qpanda',
+    'tensorcircuit'
 ]
 
 
@@ -106,3 +107,17 @@ frameworks = [
         platform = ['cpu', 'gpu']
         qubit_min = 4
         qubit_max = 20
+
+[framework.tensorcircuit]
+    [framework.tensorcircuit.benchmark_random_circuit]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 17
+    [framework.tensorcircuit.benchmark_random_ham]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 17
+    [framework.tensorcircuit.benchmark_4_regular_qaoa]
+        platform = ['cpu', 'gpu']
+        qubit_min = 5
+        qubit_max = 17

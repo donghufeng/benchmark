@@ -20,9 +20,9 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 $PYTHON -c "from importlib.metadata import version; version('tensorcircuit')"
 if [ $? -ne 0 ]; then
 
-    echo "Installing tensorcircuit"
+    benchmark_info "Installing tensorcircuit"
 
     $PYTHON -m pip install tensorcircuit==0.5.0 -i ${HUAWEI_PIP}
 else
-    echo "${_BOLD}${_RED}tensorcircuit already installed.${_NORMAL}"
+     pkg_install_info "tensorcircuit"
 fi
