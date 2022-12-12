@@ -39,6 +39,11 @@ if [ $? -ne 0 ]; then
     if [ ! -d $PACKAGEPATH ]; then
         git clone $URL
     fi
+
+    $PYTHON -c "from importlib.metadata import version; version('scipy')"
+    if [ $? -ne 0 ]; then
+        $PYTHON -m pip install scipy
+    fi
     cd $PACKAGEPATH
     if [ "$_IS_GITHUB_CI" -eq 1 ]; then
         $PYTHON setup.py install
