@@ -22,7 +22,6 @@ from qulacs import (
     QuantumState,
     gate,
 )
-from qulacs_core import QuantumStateGpu
 
 from benchmark import SEED
 from benchmark.task_preparation import generate_random_circuit
@@ -66,6 +65,7 @@ def qulacs_random_circ(n_qubits):
 
 def qulacs_random_circuit_prepare(platform: str, n_qubits: int):
     if platform == "gpu":
+        from qulacs_core import QuantumStateGpu
         QuantumState = QuantumStateGpu
     elif platform == "cpu":
         from qulacs import QuantumState
