@@ -20,8 +20,6 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 PACKAGENAME="Intel-QS"
 PACKAGEPATH="${third_party}/${PACKAGENAME}"
 
-export PYTHONPATH=${PACKAGEPATH}/build/lib:$PYTHONPATH
-
 $PYTHON -c "import intelqs_py" 2> /dev/null
 
 if [ $? -ne 0 ]; then

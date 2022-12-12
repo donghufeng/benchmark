@@ -17,7 +17,9 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
-if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
+$PYTHON -c "import quest_test" 2> /dev/null
+
+if [ $? -ne 0 ]; then
 
     benchmark_info "Installing quest"
     URL=https://gitee.com/donghufeng/QuEST.git
@@ -70,19 +72,30 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
         cd $ROOTDIR
     fi
 
-    if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
-        die "Install quest failed."
-    else
+    $PYTHON -c "import quest_test" 2> /dev/null
+
+    if [ $? -ne 0 ]; then
         pkg_installed_info "quest"
         if [ -d build ]; then
             rm -rf build
         fi
         mkdir build
         cd build
-        cmake -Dpybind11_DIR=${PYBIND_DIR} ..
+        if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+            cmake -Dpybind11_DIR=${PYBIND_DIR} -DUNABLE_GPU=ON -DOUTPUT_DIR=${SITE_PACKAGES} ..
+        else
+            cmake -Dpybind11_DIR=${PYBIND_DIR} -DOUTPUT_DIR=${SITE_PACKAGES} ..
+        fi
         make -j8
         cd $ROOTDIR
-        ls $ROOTDIR/benchmark/*.so
+        ls ${SITE_PACKAGES}/*.so
+    fi
+
+    $PYTHON -c "import quest_test" 2> /dev/null
+    if [ $? -ne 0 ]; then
+            die "Install quest failed."
+    else
+        pkg_installed_info "quest"
     fi
 else
     pkg_installed_info "quest"
