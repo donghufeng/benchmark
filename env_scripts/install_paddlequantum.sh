@@ -28,9 +28,14 @@ if [ $? -ne 0 ]; then
     $PYTHON -m pip install paddlepaddle-gpu==2.4.0rc0 -i https://mirror.baidu.com/pypi/simple
 
     $PYTHON -m pip install openfermion --upgrade
-
+    $PYTHON -c "from importlib.metadata import version; version('paddle_quantum')"
+    if [ $? -ne 0 ]; then
+        die "Install paddle quantum failed."
+    else
+        pkg_installed_info "paddle_quantum"
+    fi
 else
 
-    echo "${_BOLD}${_RED}paddle quantum already installed.${_NORMAL}"
+    pkg_installed_info "paddle_quantum"
 
 fi

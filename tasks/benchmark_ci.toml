@@ -1,6 +1,6 @@
 [benchmark-framework]
 frameworks = [
-    'intel',
+    'paddlequantum',
 ]
 
 
@@ -27,3 +27,17 @@ frameworks = [
         platform = ['cpu', 'gpu']
         qubit_min = 5
         qubit_max = 24
+
+[framework.paddlequantum]
+    [framework.paddlequantum.benchmark_random_circuit]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 20
+    [framework.paddlequantum.benchmark_random_ham]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 13
+    [framework.paddlequantum.benchmark_4_regular_qaoa]
+        platform = ['cpu', 'gpu']
+        qubit_min = 5
+        qubit_max = 20
