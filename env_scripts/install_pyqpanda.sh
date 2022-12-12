@@ -19,11 +19,11 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 
 
 if [ "$_IS_GITHUB_CI" -eq "1" ]; then
-    $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
+    $PYTHON -c "import pyqpanda"
 
     if [ $? -ne 0 ]; then
         $PYTHON -m pip install pyqpanda
-        $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
+        $PYTHON -c "import pyqpanda"
         if [ $? -ne 0 ]; then
             benchmark_info "Install pyqpanda failed"
         else
@@ -33,7 +33,7 @@ if [ "$_IS_GITHUB_CI" -eq "1" ]; then
         pkg_installed_info "pyqpanda"
     fi
 else
-    $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
+    $PYTHON -c "import pyqpanda"
 
     if [ $? -ne 0 ]; then
 
@@ -69,6 +69,7 @@ else
         else
             pkg_installed_info "pybind11"
         fi
+        export CPLUS_INCLUDE_PATH=${PYTHON_INCLUDE_DIR}
         cmake -DFIND_CUDA=${FIND_CUDA} -DUSE_PYQPANDA=ON -DPYQPANDA_STUBGEN=OFF -DUSE_SIMD=ON -Dpybind11_DIR=${PYBIND_DIR} ..
         make -j8
         cd ../pyQPanda
@@ -76,7 +77,7 @@ else
         cp -r pyqpanda ${SITE_PACKAGES}
     else
 
-        echo "${_BOLD}${_RED}pyqpanda already installed.${_NORMAL}"
+        pkg_installed_info "pyqpanda"
 
     fi
 fi
