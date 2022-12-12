@@ -19,7 +19,7 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 
 if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
 
-    echo "Installing quest"
+    benchmark_info "Installing quest"
     URL=https://gitee.com/donghufeng/QuEST.git
     PACKAGENAME="QuEST"
     PACKAGEPATH=${third_party}/${PACKAGENAME}
@@ -42,29 +42,38 @@ if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
     cmake ..
     make -j10
     cp QuEST/libQuEST.so $python_venv_path/lib
-    # cd ..
-    # rm -rf build
-    # mkdir build
-    # cd build
-    # cmake ..
-    # make -j10
-    # cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST.so
     export LD_LIBRARY_PATH=${python_venv_path}/lib:${LD_LIBRARY_PATH}
-
     cd $ROOTDIR
-    cd $third_party
-    cd $PACKAGEPATH
-    if [ -d build ]; then
-        rm -rf build
+
+    if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+        cd $third_party
+        cd $PACKAGEPATH
+        if [ -d build ]; then
+            rm -rf build
+        fi
+        mkdir build
+        cd build
+        cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
+        make -j10
+        cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST_GPU.so
+
+        cd $ROOTDIR
     fi
-    mkdir build
-    cd build
-    cmake .. -DGPUACCELERATED=1 -DGPU_COMPUTE_CAPABILITY=60
-    make -j10
-    cp QuEST/libQuEST.so $python_venv_path/lib/libQuEST_GPU.so
 
-    cd $ROOTDIR
-
+    if [ ! -f $python_venv_path/lib/libQuEST.so ]; then
+        die "Install quest failed."
+    else
+        pkg_installed_info "quest"
+        if [ -d build ]; then
+            rm -rf build
+        fi
+        mkdir build
+        cd build
+        cmake ..
+        make -j8
+        cd $ROOTDIR
+        ls $ROOTDIR/benchmark/*.so
+    fi
 else
-    echo "${_BOLD}${_RED}quest already installed.${_NORMAL}"
+    pkg_installed_info "quest"
 fi
