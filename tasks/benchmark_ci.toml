@@ -1,5 +1,12 @@
 [benchmark-framework]
 frameworks = [
+    'intel',
+    'paddlequantum',
+    'qiskit',
+    'tensorflowquantum',
+    'qulacs',
+    'quest',
+    'qpanda',
     'tensorcircuit',
 ]
 
