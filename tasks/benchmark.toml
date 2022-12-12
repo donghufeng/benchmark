@@ -4,6 +4,7 @@ frameworks = [
     'mindquantum',
     'paddlequantum',
     'qiskit',
+    'tensorflowquantum'
 ]
 
 
@@ -53,4 +54,18 @@ frameworks = [
     [framework.qiskit.benchmark_random_ham]
         platform = ['cpu', 'gpu']
         qubit_min = 4
+        qubit_max = 24
+
+[framework.tensorflowquantum]
+    [framework.tensorflowquantum.benchmark_random_circuit]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 24
+    [framework.tensorflowquantum.benchmark_random_ham]
+        platform = ['cpu', 'gpu']
+        qubit_min = 4
+        qubit_max = 24
+    [framework.tensorflowquantum.benchmark_4_regular_qaoa]
+        platform = ['cpu', 'gpu']
+        qubit_min = 5
         qubit_max = 24

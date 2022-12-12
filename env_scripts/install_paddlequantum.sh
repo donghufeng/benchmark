@@ -21,10 +21,10 @@ $PYTHON -c "from importlib.metadata import version; version('paddle_quantum')"
 
 if [ $? -ne 0 ]; then
 
-    echo "Install paddlepaddle quantum"
+    benchmark_info "Install paddlepaddle quantum"
     $PYTHON -m pip install paddle-quantum
 
-    echo "Install paddle"
+    benchmark_info "Install paddle"
     $PYTHON -m pip install paddlepaddle-gpu==2.4.0rc0 -i https://mirror.baidu.com/pypi/simple
 
     $PYTHON -m pip install openfermion --upgrade

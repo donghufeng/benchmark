@@ -20,10 +20,16 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 $PYTHON -c "from importlib.metadata import version; version('tensorflow_quantum')"
 if [ $? -ne 0 ]; then
 
-    echo "Installing tensorflow_quantum"
+    benchmark_info "Installing tensorflow_quantum"
 
     $PYTHON -m pip install tensorflow==2.7.0 -i ${HUAWEI_PIP}
     $PYTHON -m pip install tensorflow_quantum==0.7.2 -i ${HUAWEI_PIP}
+    $PYTHON -c "from importlib.metadata import version; version('tensorflow_quantum')"
+    if [ $? -ne 0 ]; then
+        die "Install TensorFlow Quantum failed."
+    else
+        pkg_installed_info "TensorFlow Quantum"
+    fi
 else
-    echo "${_BOLD}${_RED}tensorflow quantum already installed.${_NORMAL}"
+    pkg_installed_info "TensorFlow Quantum"
 fi

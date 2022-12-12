@@ -21,10 +21,16 @@ $PYTHON -c "from importlib.metadata import version; version('qiskit_aer')"
 
 if [ $? -ne 0 ]; then
 
-    echo "Installing qiskit"
+    benchmark_info "Installing qiskit"
 
     $PYTHON -m pip install qiskit qiskit-aer
     $PYTHON -m pip install qiskit-aer-gpu
+    $PYTHON -c "from importlib.metadata import version; version('qiskit_aer')"
+    if [ $? -ne 0 ]; then
+        die "Install qiskit failed."
+    else
+        pkg_installed_info "qiskit"
+    fi
 else
-    echo "${_BOLD}${_RED}qiskit already installed.${_NORMAL}"
+    pkg_installed_info "qiskit"
 fi
