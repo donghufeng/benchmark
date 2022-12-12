@@ -72,7 +72,7 @@ if [ $find_it -eq 1 ]; then
     . "$BASEPATH/install_tensorcircuit.sh"
 fi
 
-has_framework "pyqpanda" $1
+has_framework "qpanda" $1
 if [ $find_it -eq 1 ]; then
     benchmark_info "Install PYQPANDA"
     . "$BASEPATH/install_pyqpanda.sh"

@@ -17,48 +17,66 @@
 
 BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd )
 
-$PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
 
-if [ $? -ne 0 ]; then
+if [ "$_IS_GITHUB_CI" -eq "1" ]; then
+    $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
 
-    echo "Install pyqpanda"
-    URL=https://gitee.com/OriginQ/QPanda-2.git
-    PACKAGENAME="QPanda-2"
-    PACKAGEPATH=${third_party}/${PACKAGENAME}
-    if [ ! -d $third_party ]; then
-        mkdir $third_party
-    fi
-
-    cd $third_party
-    if [ ! -d ${PACKAGEPATH} ]; then
-        git clone $URL
-    fi
-    cd $PACKAGEPATH
-
-    if [ -d build ]; then
-        rm -rf build
-    fi
-
-    mkdir build
-    cd build
-    FIND_CUDA=ON
-    if [ "$_IS_GITHUB_CI" -eq 1 ]; then
-        FIND_CUDA=OFF
-    fi
-    PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
     if [ $? -ne 0 ]; then
-        benchmark_info "Cannot import pybind11, install it."
-        $PYTHON -m pip install pybind11==2.10.0
-        PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+        $PYTHON -m pip install pyqpanda
+        $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
+        if [ $? -ne 0 ]; then
+            benchmark_info "Install pyqpanda failed"
+        else
+            pkg_installed_info "pyqpanda"
+        fi
     else
-        pkg_installed_info "pybind11"
+        pkg_installed_info "pyqpanda"
     fi
-    cmake -DFIND_CUDA=${FIND_CUDA} -DUSE_PYQPANDA=ON -DPYQPANDA_STUBGEN=OFF -DUSE_SIMD=ON -Dpybind11_DIR=${PYBIND_DIR} ..
-    make -j8
-    cd ../pyQPanda
-    $PYTHON setup.py install
 else
+    $PYTHON -c "from importlib.metadata import version; version('pyqpanda')"
 
-    echo "${_BOLD}${_RED}pyqpanda already installed.${_NORMAL}"
+    if [ $? -ne 0 ]; then
 
+        echo "Install pyqpanda"
+        URL=https://gitee.com/OriginQ/QPanda-2.git
+        PACKAGENAME="QPanda-2"
+        PACKAGEPATH=${third_party}/${PACKAGENAME}
+        if [ ! -d $third_party ]; then
+            mkdir $third_party
+        fi
+
+        cd $third_party
+        if [ ! -d ${PACKAGEPATH} ]; then
+            git clone $URL
+        fi
+        cd $PACKAGEPATH
+
+        if [ -d build ]; then
+            rm -rf build
+        fi
+
+        mkdir build
+        cd build
+        FIND_CUDA=ON
+        if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+            FIND_CUDA=OFF
+        fi
+        PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+        if [ $? -ne 0 ]; then
+            benchmark_info "Cannot import pybind11, install it."
+            $PYTHON -m pip install pybind11==2.10.0
+            PYBIND_DIR=$($PYTHON -c "import pybind11;print(pybind11.get_cmake_dir())")
+        else
+            pkg_installed_info "pybind11"
+        fi
+        cmake -DFIND_CUDA=${FIND_CUDA} -DUSE_PYQPANDA=ON -DPYQPANDA_STUBGEN=OFF -DUSE_SIMD=ON -Dpybind11_DIR=${PYBIND_DIR} ..
+        make -j8
+        cd ../pyQPanda
+        rm -rf ${SITE_PACKAGES}/pyqpanda*
+        cp -r pyqpanda ${SITE_PACKAGES}
+    else
+
+        echo "${_BOLD}${_RED}pyqpanda already installed.${_NORMAL}"
+
+    fi
 fi
