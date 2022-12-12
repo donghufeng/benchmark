@@ -48,7 +48,7 @@ if [ $? -ne 0 ]; then
     else
         pkg_installed_info "pybind11"
     fi
-    cp $PYBIND_DIR/
+
     mkdir build
     cd build
     cmake -Dpybind11_DIR=${PYBIND_DIR} ..

@@ -1,6 +1,6 @@
 [benchmark-framework]
 frameworks = [
-    'quest',
+    'qpanda',
 ]
 
 
@@ -86,6 +86,16 @@ frameworks = [
         qubit_min = 4
         qubit_max = 5
     [framework.quest.benchmark_random_ham]
+        platform = ['cpu']
+        qubit_min = 4
+        qubit_max = 5
+
+[framework.qpanda]
+    [framework.qpanda.benchmark_random_circuit]
+        platform = ['cpu']
+        qubit_min = 4
+        qubit_max = 5
+    [framework.qpanda.benchmark_random_ham]
         platform = ['cpu']
         qubit_min = 4
         qubit_max = 5
