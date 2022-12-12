@@ -23,6 +23,8 @@ if [ $? -ne 0 ]; then
     benchmark_info "Installing tensorcircuit"
 
     $PYTHON -m pip install tensorcircuit==0.5.0 -i ${HUAWEI_PIP}
+    $PYTHON -m pip install tensorflow==2.7.0 -i ${HUAWEI_PIP}
+
 else
      pkg_installed_info "tensorcircuit"
 fi
