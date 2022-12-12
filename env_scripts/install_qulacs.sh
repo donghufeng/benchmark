@@ -20,10 +20,10 @@ BASEPATH=$( cd -- "$( dirname -- "${BASH_SOURCE[0]:-$0}" )" &> /dev/null && pwd 
 $PYTHON -c "import qulacs"
 if [ $? -ne 0 ]; then
 
-    echo "Installing qulacs"
-    dpkg -s libboost-dev > /dev/null
+    benchmark_info "Installing qulacs"
+    dpkg -s libboost-dev 2> /dev/null
     if [ $? -ne 0 ]; then
-        echo "Install boost"
+        benchmark_info "Install boost"
         sudo apt-get install libboost-all-dev
     fi
     URL="https://gitee.com/donghufeng/qulacs"
@@ -40,8 +40,18 @@ if [ $? -ne 0 ]; then
         git clone $URL
     fi
     cd $PACKAGEPATH
-    USE_GPU=Yes $PYTHON setup.py install
+    if [ "$_IS_GITHUB_CI" -eq 1 ]; then
+        $PYTHON setup.py install
+    else
+        USE_GPU=Yes $PYTHON setup.py install
+    fi
     cd $ROOTDIR
+    $PYTHON -c "import qulacs"
+    if [ $? -ne 0 ]; then
+        die "Install qulacs failed."
+    else
+        pkg_installed_info "qulacs"
+    fi
 else
-    echo "${_BOLD}${_RED}qulacs already installed.${_NORMAL}"
+    pkg_installed_info "qulacs"
 fi
