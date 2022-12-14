@@ -100,8 +100,9 @@ tasks = TaskManage()
 for fw in all_framework:
     fw_tasks = tasks_conf['framework'][fw]
     for task, arg in fw_tasks.items():
-        tasks.add_task(f"./{fw}/{task}.py").add_arg(
-            "p",
-            arg['platform']).add_arg('q',
-                                     range(arg['qubit_min'], arg['qubit_max']))
+        this_task = tasks.add_task(f"./{fw}/{task}.py")
+        this_task.add_arg("p", arg['platform'])
+        if 'gate' in arg:
+            this_task.add_arg('g', arg['gate'])
+        this_task.add_arg('q', range(arg['qubit_min'], arg['qubit_max']))
 tasks.generate_script()

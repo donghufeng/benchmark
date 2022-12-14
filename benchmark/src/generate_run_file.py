@@ -95,7 +95,7 @@ class Task:
         out = []
         for arg in all_args:
             tmp = " ".join([
-                f"-{i} {j}"
+                f"--{i} {j}"
                 for i, j in dict(zip(self.args.keys(), arg)).items()
             ])
             out.append(f"{cmd} {self.task_file} {tmp} -n $file_name")

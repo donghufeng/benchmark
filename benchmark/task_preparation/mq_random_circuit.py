@@ -17,7 +17,7 @@
 from mindquantum.core import gates as G
 from mindquantum.core.circuit import Circuit
 from mindquantum.simulator import Simulator
-
+from mindquantum.algorithm.compiler.circuit_opt import grouping
 from benchmark.task_preparation import generate_random_circuit
 
 
@@ -41,8 +41,10 @@ def mq_random_circuit(n_qubits: int):
     return circ
 
 
-def mq_random_circuit_prepare(backend: str, n_qubits: str):
+def mq_random_circuit_prepare(backend: str, n_qubits: str, group=False):
     circ = mq_random_circuit(n_qubits)
+    if group:
+        circ = grouping(circ, 3)
     sim = Simulator(backend, n_qubits)
     circ.get_cpp_obj()
 

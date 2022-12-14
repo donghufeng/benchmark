@@ -1,14 +1,14 @@
 [benchmark-framework]
 frameworks = [
-    'intel',
+    # 'intel',
     'mindquantum',
-    'paddlequantum',
-    'qiskit',
-    'tensorflowquantum',
-    'qulacs',
-    'quest',
-    'qpanda',
-    'tensorcircuit'
+    # 'paddlequantum',
+    # 'qiskit',
+    # 'tensorflowquantum',
+    # 'qulacs',
+    # 'quest',
+    # 'qpanda',
+    # 'tensorcircuit'
 ]
 
 
@@ -23,18 +23,22 @@ frameworks = [
         qubit_max = 24
 
 [framework.mindquantum]
-    [framework.mindquantum.benchmark_random_circuit]
+    [framework.mindquantum.benchmark_random_circuit_opt]
         platform = ['cpu', 'gpu']
         qubit_min = 4
         qubit_max = 24
-    [framework.mindquantum.benchmark_random_ham]
-        platform = ['cpu', 'gpu']
-        qubit_min = 4
-        qubit_max = 24
-    [framework.mindquantum.benchmark_4_regular_qaoa]
-        platform = ['cpu', 'gpu']
-        qubit_min = 5
-        qubit_max = 24
+    # [framework.mindquantum.benchmark_random_circuit]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 4
+    #     qubit_max = 24
+    # [framework.mindquantum.benchmark_random_ham]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 4
+    #     qubit_max = 24
+    # [framework.mindquantum.benchmark_4_regular_qaoa]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 5
+    #     qubit_max = 24
 
 [framework.paddlequantum]
     [framework.paddlequantum.benchmark_random_circuit]

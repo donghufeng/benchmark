@@ -1,0 +1,45 @@
+[benchmark-framework]
+frameworks = [
+    'qulacs',
+    'mindquantum',
+]
+
+[framework.qulacs]
+    # [framework.qulacs.benchmark_single_gate]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 4
+    #     qubit_max = 24
+    #     gate = ['X', 'T', 'CNOT', 'H', 'RX', 'RZ']
+
+    [framework.qulacs.benchmark_qcbm]
+        platform = ['cpu', 'gpu']
+        qubit_min = 18
+        qubit_max = 28
+
+[framework.mindquantum]
+    # [framework.mindquantum.benchmark_single_gate]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 4
+    #     qubit_max = 24
+    #     gate = ['X', 'T', 'CNOT', 'H', 'RX', 'RZ']
+
+    # [framework.mindquantum.benchmark_qcbm]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 18
+    #     qubit_max = 28
+
+    # [framework.mindquantum.benchmark_single_gate_cpp]
+    #     platform = ['cpu', 'gpu']
+    #     qubit_min = 4
+    #     qubit_max = 24
+    #     gate = ['X', 'T', 'CNOT', 'H', 'RX', 'RZ']
+
+    [framework.mindquantum.benchmark_qcbm_cpp]
+        platform = ['cpu', 'gpu']
+        qubit_min = 18
+        qubit_max = 28
+
+    [framework.mindquantum.benchmark_qcbm_opt]
+        platform = ['cpu', 'gpu']
+        qubit_min = 18
+        qubit_max = 28
