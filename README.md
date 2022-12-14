@@ -109,3 +109,64 @@ If you successfully prepared the environment, then you can run following code to
 ```
 
 Your virtual python environment should be activated. At this this time, feel free to commit out some frameworks or benchmark tasks in configuration file.
+
+### Explain
+
+How this benchmark framework works?
+
+Basically, we run different python scripts to do benchmark, for example you want to benchmark a task in different qubit `q` and different platform, you can do like:
+
+```bash
+python task1.py -q 5 -p cpu
+python task1.py -q 6 -p cpu
+python task2.py -q 5 -p gpu
+python task2.py -q 6 -p gpu
+```
+
+The rest things is to how to organize tasks, how to implement the task and how to show benchmark result. We will explain one by one.
+
+### How to organize tasks
+
+This framework support a `TaskManage` for manage different tasks.
+
+```python
+from benchmark import TaskManage
+tasks = TaskManage()
+```
+
+Add a script as a task:
+
+```python
+task = tasks.add_task('task1.py')
+```
+
+Add arguments to this task:
+
+```python
+task.add_arg('q', [5, 6])
+task.add_arg('p', ['cpu', 'gpu'])
+```
+
+Generate task file:
+
+```python
+tasks.generate_script(script_name="test.sh", cmd='python3')
+```
+
+And you will get a `test.sh`, let's see what it is.
+
+```bash
+python3 task1.py -q 5 -p cpu -n $file_name
+python3 task1.py -q 5 -p gpu -n $file_name
+python3 task1.py -q 6 -p cpu -n $file_name
+python3 task1.py -q 6 -p gpu -n $file_name
+```
+
+`file_name` is a argument you need to send to `test.sh`. Now you can run the benchmark script like:
+
+```bash
+bash test.sh result
+```
+
+### How to implement task file
+

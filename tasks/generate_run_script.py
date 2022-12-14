@@ -12,73 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
-# from benchmark import TaskManage
-
-# tasks = TaskManage()
-# tasks.add_task("./intel/benchmark_random_circuit.py").add_arg("p",
-#                                                               ["cpu"]).add_arg(
-#                                                                   "q",
-#                                                                   range(4, 24))
-# tasks.add_task("./intel/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu"]).add_arg("q", range(4, 24))
-
-# tasks.add_task("./mindquantum/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./mindquantum/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./mindquantum/benchmark_4_regular_qaoa.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(5, 24))
-
-# tasks.add_task("./paddlequantum/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 20))
-# tasks.add_task("./paddlequantum/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 13))
-# tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
-#     "p", ["cpu"]).add_arg("q", range(5, 20))
-# tasks.add_task("./paddlequantum/benchmark_4_regular_qaoa.py").add_arg(
-#     "p", ["gpu"]).add_arg("q", range(5, 23))
-
-# tasks.add_task("./quest/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./quest/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-
-# tasks.add_task("./qulacs/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./qulacs/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./qulacs/benchmark_4_regular_qaoa.py").add_arg(
-#     "p", ["cpu"]).add_arg("q", range(5, 24))
-
-# # tasks.add_task("./tensorcircuit/benchmark_random_circuit.py").add_arg(
-# #     "p", ["cpu", "gpu"]
-# # ).add_arg("q", range(4, 17))
-# # tasks.add_task("./tensorcircuit/benchmark_random_ham.py").add_arg(
-# #     "p", ["cpu", "gpu"]
-# # ).add_arg("q", range(4, 17))
-# # tasks.add_task("./tensorcircuit/benchmark_4_regular_qaoa.py").add_arg(
-# #     "p", ["cpu", "gpu"]
-# # ).add_arg("q", range(5, 17))
-
-# tasks.add_task("./tensorflowquantum/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./tensorflowquantum/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./tensorflowquantum/benchmark_4_regular_qaoa.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(5, 24))
-
-# tasks.add_task("./qiskit/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-# tasks.add_task("./qiskit/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 24))
-
-# tasks.add_task("./qpanda/benchmark_random_circuit.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 20))
-# tasks.add_task("./qpanda/benchmark_random_ham.py").add_arg(
-#     "p", ["cpu", "gpu"]).add_arg("q", range(4, 20))
-
-# tasks.generate_script()
-
 import toml
 from benchmark import TaskManage
 import argparse
@@ -97,11 +30,29 @@ all_framework = tasks_conf['benchmark-framework']['frameworks']
 
 tasks = TaskManage()
 
+# 1. add_task will add a python script to run.
+# For example:
+# >>> tasks.add_task("xxx.py")
+# will generate a cmd like:
+#    python xxx.py
+
+# 2. add_arg will pass argument to python script
+# For example:
+# >>> task.add_arg("x", [a, b, c])
+# will generate a cmd like:
+#    python xxx.py -x a
+#    python xxx.py -x b
+#    python xxx.py -x c
+
+# 3. generate_script will generate a file named `run_benchmark.sh`
+# you can run it and store the  benchmark result to a file like:
+#    bash run_benchmark.sh res
+# After the benchmark finished, a file named `res.json` will be generated.
+
 for fw in all_framework:
     fw_tasks = tasks_conf['framework'][fw]
     for task, arg in fw_tasks.items():
-        tasks.add_task(f"./{fw}/{task}.py").add_arg(
-            "p",
-            arg['platform']).add_arg('q',
-                                     range(arg['qubit_min'], arg['qubit_max']))
+        this_task = tasks.add_task(f"./{fw}/{task}.py")
+        this_task.add_arg("p", arg['platform'])
+        this_task.add_arg('q', range(arg['qubit_min'], arg['qubit_max']))
 tasks.generate_script()

@@ -113,8 +113,8 @@ class TaskManage:
         self.tasks.append(task)
         return task
 
-    def generate_script(self, scripe_name="run_benchmark.sh", cmd='python3'):
-        with open(scripe_name, "w") as f:
+    def generate_script(self, script_name="run_benchmark.sh", cmd='python3'):
+        with open(script_name, "w") as f:
             f.writelines(meta)
             for task in self.tasks:
                 f.writelines("\n" + "\n".join(task.generate_cmd(cmd)) + "\n")
