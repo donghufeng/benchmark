@@ -22,7 +22,7 @@
 |-|-|-|-|-|-|-|
 |random_circuit_qs|随机量子线路振幅模拟|4-24|/|25*n|1-8|/|
 |random_hamiltonian_expectation|随机哈密顿量期望值|4-24|$\min(1000-100, n_\text{qubit}^4)$|/|1-8|/|
-|maxcut_random_2_regular_with_qaoa|利用qaoa解决随机2-regular的maxcut问题|4-24|/|/|1-8|1|
+|maxcut_random_4_regular_with_qaoa|利用qaoa解决随机4-regular的maxcut问题|4-24|/|/|1-8|1|
 
 ## Task Detail
 
@@ -86,3 +86,26 @@ Only support rx, ry, rz, rot_pauli, only **CPU**.
 ### TensorFlow Quantum
 
 Only support float type.
+
+## How to use
+
+### Prepare environment
+
+The environment is prepared based on what you want to benchmark. For example, the default benchmark task configuration is in `./tasks/benchmark.toml`, you can prepare the environment by:
+
+```bash
+bash prepare_venv.sh ./tasks/benchmark.toml
+```
+This script can install frameworks you want to benchmark.
+
+> If you want to add new framework to this benchmark project, you need to implement a installing script in `env_scripts` and add it to `env_scripts/install_benchmark_lib.sh`.
+
+### Activate environment
+
+If you successfully prepared the environment, then you can run following code to activate it.
+
+```bash
+. prepare_venv.sh ./tasks/benchmark.toml
+```
+
+Your virtual python environment should be activated. At this this time, feel free to commit out some frameworks or benchmark tasks in configuration file.
