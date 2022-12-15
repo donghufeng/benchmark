@@ -114,7 +114,7 @@ Your virtual python environment should be activated. At this this time, feel fre
 
 How this benchmark framework works?
 
-Basically, we run different python scripts to do benchmark, for example you want to benchmark a task in different qubit `q` and different platform, you can do like:
+Basically, we run different python scripts to do benchmark, for example if you want to benchmark a task in different qubit `q` and different platform, you can do like:
 
 ```bash
 python task1.py -q 5 -p cpu
@@ -170,3 +170,43 @@ bash test.sh result
 
 ### How to implement task file
 
+Basically, this framework benchmark performance by running a method several times to measure the time consuming. We have a `Benchmark` object to implement benchmark. Suppose we want to benchmark the following method:
+
+```python
+import argparse
+from mindquantum import *
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p", "--platform", help="platform", type=str, default="cpu")
+parser.add_argument("-q", "--qubit", help="number of qubit", type=int, default=4)
+args = parser.parse_args()
+
+def tasks(platform, n_qubit):
+    sim = Simulator(platform, n_qubit)
+    circ =  qft(n_qubit)
+    def run(layer):
+        for l in range(layer):
+            sim.apply_circuit(circ)
+        return sim
+    return run
+
+run = tasks(args.platform, args.qubit)
+```
+
+We can setup the benchmark by:
+
+```python
+from benchmark import Benchmark
+Benchmark(file_name='xxx.json',
+          file_path='./',
+          task_name='qft',
+          task_params={'platform': args.platform, 'n_qubit': args.qubit},
+          task_fun=run,
+          task_args=(4, ),
+          warmup=True
+          )
+```
+
+The `file_name` and `file_path` is where you will save your benchmark result. `task_name` is how to identify your benchmark in the result. `task_params` is how your benchmark setup, and it can also help to identify which run you are in a same task. `task_fun` is just the method you want to benchmark. `task_args` is the runtime arguments for `task_fun`. `warmup` is set to run several times before we measure the time consuming.
+
+> Once the benchmark setup, the benchmark will run automatically.
