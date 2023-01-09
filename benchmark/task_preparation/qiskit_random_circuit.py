@@ -21,6 +21,7 @@ from benchmark.task_preparation import generate_random_circuit
 
 def prepare_circuit(n_qubits: int):
     circ_text = generate_random_circuit(n_qubits)
+    circ_text = circ_text*10
     circ = QuantumCircuit(n_qubits)
     for gate_args in circ_text:
         gate = gate_args[0]
@@ -48,11 +49,14 @@ def qiskit_random_circuit_prepare(platform: str, n_qubits: int):
     circ.save_statevector()
 
     def run():
-        return Simulator.run(circ).result().get_statevector(circ)
+        a = Simulator.run(circ)
+        r = a.result()
+        v = r.get_statevector(circ)
+        return v
 
     return run
 
 
 if __name__ == "__main__":
-    run = qiskit_random_circuit_prepare("gpu", 5)
+    run = qiskit_random_circuit_prepare("cpu", 23)
     run()

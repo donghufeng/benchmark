@@ -40,7 +40,7 @@ def test_4_regular_qaoa(platform: str, n_qubits: int):
         args.file_dir,
         "4_regular_maxcut",
         {
-            "framework": "mindquantum",
+            "framework": "mindquantum_avx",
             "platform": platform,
             "n_qubit": n_qubits,
         },
