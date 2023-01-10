@@ -38,7 +38,7 @@ def test_random_circuit(platform: str, n_qubits: int):
         args.file_dir,
         "random_circuit_evolution",
         {
-            "framework": "quest",
+            "framework": "quest_float",
             "platform": platform,
             "n_qubit": n_qubits,
         },

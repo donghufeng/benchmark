@@ -53,13 +53,13 @@ def filter_task(data: dict, task: str):
     return out
 
 
-def filter_task_params(data: dict, task_param_name: str, task_param_val):
+def filter_task_params(data: dict, task_param_name: str, *task_param_val):
     """Find all data that match task_params key and value with given value."""
     out = {}
     for k, v in data.items():
         if (
             task_param_name in v.get("task_params")
-            and v.get("task_params").get(task_param_name) == task_param_val
+            and v.get("task_params").get(task_param_name) in task_param_val
         ):
             out[k] = v
     return out
@@ -94,8 +94,8 @@ class DataFrame:
     def filter_task(self, task_name: str):
         return DataFrame(filter_task(self.data, task_name))
 
-    def filter_task_params(self, task_param_name: str, task_param_val) -> "DataFrame":
-        return DataFrame(filter_task_params(self.data, task_param_name, task_param_val))
+    def filter_task_params(self, task_param_name: str, *task_param_val) -> "DataFrame":
+        return DataFrame(filter_task_params(self.data, task_param_name, *task_param_val))
 
     def split_by_params(self, task_param_name: str) -> List["DataFrame"]:
         return [
