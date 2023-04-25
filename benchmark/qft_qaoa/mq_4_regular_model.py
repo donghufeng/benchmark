@@ -34,6 +34,7 @@ def mq_qaoa_exp(n_qubit, backend):
 
 
 def mq_qaoa_prepare(backend: str, n_qubits: int):
+    backend = {'cpu':'mqvector','gpu':'mqvector_gpu'}[backend]
     mq_grad_ops, n_p = mq_qaoa_exp(n_qubits, backend)
     p0 = np.random.uniform(-1, 1, n_p)
 

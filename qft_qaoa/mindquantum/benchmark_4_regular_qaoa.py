@@ -27,10 +27,8 @@ args = parser.parse_args()
 
 
 def test_4_regular_qaoa(platform: str, n_qubits: int):
-    if platform == "cpu":
-        run = mq_qaoa_prepare("mqvector", n_qubits)
-    elif platform == "gpu":
-        run = mq_qaoa_prepare("mqvector_gpu", n_qubits)
+    if platform in ['cpu', 'gpu']:
+        run = mq_qaoa_prepare(platform, n_qubits)
     else:
         raise RuntimeError(
             f"Platform unknown: test_4_regular_qaoa({platform}, {n_qubits})"

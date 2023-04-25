@@ -16,7 +16,7 @@ from mindquantum import *
 
 
 def mq_qft_prepare(backend:str, n_qubits: str):
-    backend = 'mqvector' if backend.lower() == "cpu" else 'mqvector_gpu'
+    backend = {'cpu':'mqvector','gpu':'mqvector_gpu'}[backend]
     circ = qft(range(n_qubits))
     sim = Simulator(backend, n_qubits)
     circ.get_cpp_obj()
