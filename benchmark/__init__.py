@@ -39,13 +39,11 @@ def get_config(task_name: str) -> Dict:
 
 SEED = get_config("global_seed")
 
-from . import task_preparation
 from .src import Benchmark, BenchmarkProcess, DataFrame, Task, TaskManage
 
 __all__ = [
     "BenchmarkProcess",
     "Benchmark",
-    "task_preparation",
     "Task",
     "TaskManage",
     "DataFrame",

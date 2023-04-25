@@ -21,6 +21,7 @@ import time
 import numpy as np
 
 MAX_ITER = 100
+MIN_ITER = 2
 MAX_TIME = 2
 
 
@@ -68,9 +69,9 @@ class Benchmark:
             self.task_fun(*self.task_args)
             this_t = time.time()
             t.append(this_t)
-            if this_t - t[0] > MAX_TIME or n_step > MAX_ITER:
-                break
             n_step += 1
+            if (this_t - t[0] > MAX_TIME or n_step >= MAX_ITER) and n_step > MIN_ITER:
+                break
         t = np.array(t)
         t = t[1:] - t[:-1]
         self.data["time"] = list(t)

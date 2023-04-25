@@ -1,0 +1,16 @@
+[benchmark-framework]
+frameworks = [
+    'mindquantum',
+]
+
+
+[framework.mindquantum]
+    [framework.mindquantum.benchmark_qft]
+        platform = ['cpu']
+        qubit_min = 15
+        qubit_max = 34
+
+    [framework.mindquantum.benchmark_4_regular_qaoa]
+        platform = ['cpu']
+        qubit_min = 15
+        qubit_max = 32
