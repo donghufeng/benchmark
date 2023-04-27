@@ -1545,5 +1545,35 @@
             138.911762714386
         ],
         "mean": 146.13632472356161
+    },
+    "4_regular_maxcut: {'framework': 'mindquantum', 'platform': 'cpu', 'n_qubit': 30}": {
+        "task_name": "4_regular_maxcut",
+        "task_params": {
+            "framework": "mindquantum",
+            "platform": "cpu",
+            "n_qubit": 30
+        },
+        "start time": "Thu Apr 27 07:51:06 2023",
+        "time": [
+            259.80971670150757,
+            262.5601201057434,
+            272.0220401287079
+        ],
+        "mean": 264.79729231198627
+    },
+    "4_regular_maxcut: {'framework': 'mindquantum', 'platform': 'cpu', 'n_qubit': 31}": {
+        "task_name": "4_regular_maxcut",
+        "task_params": {
+            "framework": "mindquantum",
+            "platform": "cpu",
+            "n_qubit": 31
+        },
+        "start time": "Thu Apr 27 08:14:28 2023",
+        "time": [
+            577.1179730892181,
+            551.6049399375916,
+            576.0882012844086
+        ],
+        "mean": 568.2703714370728
     }
 }

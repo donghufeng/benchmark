@@ -33,3 +33,5 @@ runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m
 runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m,	platform: [1;37mcpu[00m,	n_qubit: [1;37m27[00m. 	mean time: [4;31m28.006569385528564[00m
 runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m,	platform: [1;37mcpu[00m,	n_qubit: [1;37m28[00m. 	mean time: [4;31m57.77799574534098[00m
 runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m,	platform: [1;37mcpu[00m,	n_qubit: [1;37m29[00m. 	mean time: [4;31m146.13632472356161[00m
+runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m,	platform: [1;37mcpu[00m,	n_qubit: [1;37m30[00m. 	mean time: [4;31m264.79729231198627[00m
+runing task [1;36m4_regular_maxcut[00m with framework: [1;37mmindquantum[00m,	platform: [1;37mcpu[00m,	n_qubit: [1;37m31[00m. 	mean time: [4;31m568.2703714370728[00m
